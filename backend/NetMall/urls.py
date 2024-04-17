@@ -21,6 +21,7 @@ from main_app.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', include('main_app.urls')),
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.jwt')),
 ]
