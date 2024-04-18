@@ -13,6 +13,7 @@ import AddProduct from './containers/AddProduct';
 import EditProduct from './containers/EditProduct';
 import ProductDetail from './containers/ProductDetail';
 import SellerStore from './containers/SellerStore';
+import Cart from './containers/Cart';
 import{ Provider} from 'react-redux';
 import store from './store';
 import Layout from './hocs/Layout'
@@ -40,6 +41,11 @@ function App() {
     description: '',
 });
 
+const [cartItems, setCartItems] = useState([]);
+const [editCartItems, setEditCartItems] = useState(null);
+
+
+
   const fetchProducts = () => {
     axios.get('/mynetmall/my-store', { headers, withCredential: true })
       .then(res => {
@@ -66,7 +72,7 @@ function App() {
         <Route path='/mynetmall/my-store/add-product' element={<AddProduct newProduct={newProduct} setNewProduct={setNewProduct} products={products} setProducts={setProducts} fetchProducts={fetchProducts}/>}/>
         <Route path='/mynetmall/my-store/edit-product/:productId' element={<EditProduct newProduct={newProduct} setNewProduct={setNewProduct} products={products} editProduct={editProduct} setEditProduct={setEditProduct} fetchProducts={fetchProducts}/>}/>
         <Route path='/products/:productId' element={<ProductDetail fetchProducts={fetchProducts} products={products} setProducts={setProducts}/>} />
-
+        <Route path='/mynetmall/my-cart/:uid' element={<Cart />} />
       </Routes>
     </Layout>
 

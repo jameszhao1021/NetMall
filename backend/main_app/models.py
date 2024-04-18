@@ -26,10 +26,10 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length=255, unique=True)
-    name = models.CharField(max_length=255, unique=True)
+    name = models.CharField(max_length=255, unique=True, verbose_name='User Name')
     address = models.CharField(max_length=255, blank=True)
     phone = models.CharField(max_length=20, blank=True)
-    
+    store = models.CharField(max_length=255, unique=False, blank=True)
     profile = models.ImageField(upload_to='profile/', blank=True)
     create_at = models.DateTimeField(auto_now_add = True)
     is_active = models.BooleanField(default=True)

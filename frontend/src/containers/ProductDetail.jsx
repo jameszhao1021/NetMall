@@ -52,7 +52,7 @@ function ProductDetail({ fetchProducts, products, setProducts }) {
                         <p>Description: {product.description}</p>
                         <p>Seller Id: {product.seller}</p>
                         <p>Seller Name: {product.seller_name}</p>
-
+                        <button className='btn btn-primary col-2 mb-2'>Add to cart</button>
                         <Link to={`/mynetmall/store/${product.seller}`}>
 
                             <button className='btn btn-info'>Visit the seller's store</button>

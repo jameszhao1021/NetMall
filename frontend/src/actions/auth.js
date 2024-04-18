@@ -123,7 +123,10 @@ export const signup = (name, email, password, re_password) => async dispatch => 
 
     try {
         const res = await axios.post(`${process.env.REACT_APP_API_URL}/auth/users/`, body, config);
+        
+        await axios.post(`${process.env.REACT_APP_API_URL}/create-cart`, { user_id: res.data.id });
 
+        console.log('see the new user id: ' + res.data.id )
         dispatch({
             type: SIGNUP_SUCCESS,
             payload: res.data

@@ -35,6 +35,9 @@ function NavBar({ isAuthenticated, logout, userId }) {
                </Dropdown>
             </li>
             <li className="nav-item">
+               <Link to={`/mynetmall/my-cart/${userId}`} className="nav-link">Cart</Link>
+            </li>
+            <li className="nav-item">
                <Link to='/' className="nav-link" onClick={logout}>Log Out</Link>
             </li>
          </>

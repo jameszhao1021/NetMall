@@ -7,6 +7,7 @@ from .serializers import *
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.decorators import api_view
+from django.views.decorators.csrf import csrf_exempt
 
 class BaseCRUDView(APIView):
     SelectedModel = None
@@ -45,6 +46,50 @@ class BaseCRUDView(APIView):
         instance.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+# @csrf_exempt
+# @api_view(['POST'])
+# def create_cart(request):
+#     # Extract user ID from the request data
+#     user_id = request.data.get('user_id')
+    
+#     # Validate user_id
+#     if not user_id:
+#         return Response({"message": "User ID is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+#     # Create a new cart associated with the user
+#     cart = Cart.objects.create(userId=user_id)
+    
+#     # Serialize the cart if needed
+#     serializer = CartSerializer(cart)
+    
+#     return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class CreateCartView(APIView):
+    authentication_classes = []  # Remove any authentication classes
+    permission_classes = []  # Remove any permission classes
+    
+    def post(self, request):
+        # Extract user ID from the request data
+        user_id = request.data.get('user_id')
+        
+        # Validate user ID
+        if not user_id:
+            return Response({"message": "User ID is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Retrieve the user instance corresponding to the user ID
+        try:
+            user = User.objects.get(pk=user_id)
+        except User.DoesNotExist:
+            return Response({"message": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        # Create a new cart associated with the user
+        cart = Cart.objects.create(userId=user)
+        
+        # Serialize the cart
+        serializer = CartSerializer(cart)
+        
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 class ProductView(BaseCRUDView):
 
@@ -70,11 +115,10 @@ class MyProductView(BaseCRUDView):
     SelectedSerializer = ProductSerializer
     permission_classes = [IsAuthenticated]
     def get(self, request, pk):
-
+        print(f'the user id is: {request.user.id}')
         queryset = self.SelectedModel.objects.filter(seller=pk)
         serializer = self.SelectedSerializer(queryset, many=True)
         return Response(serializer.data)
-
 
 
 class SelectedProductView(BaseCRUDView):
@@ -125,11 +169,12 @@ class SellerStoreView(BaseCRUDView):
 
 class CartView(APIView):
     permission_classes = [IsAuthenticated]
-    authentication_classes = [JWTAuthentication]
+    # authentication_classes = [JWTAuthentication]
 
-    def get(self, request):
+    def get(self, request, pk):
         # Retrieve the current user's cart items
-        cart_items = CartItem.objects.filter(user=request.user)
+        print('Check get cart')
+        cart_items = CartItem.objects.filter(id=pk)
         serializer = CartItemSerializer(cart_items, many=True)
         return Response(serializer.data)
 
