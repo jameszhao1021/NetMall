@@ -19,7 +19,7 @@ function MyStore({ products, setProducts, fetchProducts, userId, userName }) {
     'Authorization': `Bearer ${token}`
   };
 
-  const [showDeleteModal, setShowDeleteModal] = useState(false)
+const [showDeleteModal, setShowDeleteModal] = useState(false)
  const [deleteProductId, setDeleteProductId] = useState(null)
 
   function toggleDeleteModal(productId) {

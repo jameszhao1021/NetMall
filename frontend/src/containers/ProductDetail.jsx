@@ -3,9 +3,10 @@ import { useState, useEffect } from 'react'
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import AddToCartModal from '../components/AddToCartModal';
 
 function ProductDetail({ userId, fetchProducts, products, setProducts, cartItems, editCartItems}) {
-    const csrfToken = document.cookie.split('; ').find(cookie => cookie.startsWith('csrftoken=')).split('=')[1];
+    const csrfToken = document.cookie.split('; ').find(cookie => cookie.startsWith('csrftoken='))?.split('=')[1];
     axios.defaults.headers.common['X-CSRFToken'] = csrfToken;
     let { productId } = useParams();
     const [product, setProduct] = useState(null);
@@ -14,9 +15,19 @@ function ProductDetail({ userId, fetchProducts, products, setProducts, cartItems
         productId: productId,
         quantity: 1
     })    
+    const [addToCartProductId, setAddToCartProductId] = useState(null)
+
+const [showAddToCartModal, setShowAddToCartModal] = useState(false)
+
+  function toggleAddToCartModal(productId) {
+    console.log('Add to cart with ID:', productId);
+    
+    setShowAddToCartModal(prev => !prev);
+  }
 
     useEffect(() => {
         fetchProduct();
+        setAddToCartProductId(productId)
     }, [productId]);
    
     const fetchProduct = () => {
@@ -54,6 +65,7 @@ function ProductDetail({ userId, fetchProducts, products, setProducts, cartItems
             .then(res => {
                 fetchProduct(); // Fetch details again to update the list with the new object
                console.log('succesfully added to cart')
+               toggleAddToCartModal(addToCartProductId)
             })
             .catch(err => {
                 console.error('Error adding new product:', err);
@@ -63,12 +75,11 @@ function ProductDetail({ userId, fetchProducts, products, setProducts, cartItems
 
     return (
         <div className='container'>
-            
+            <h1>{addToCartProductId}</h1>
             <div>Product Detail</div>
             <div className='d-flex row'>
                 {product && ( // Check if product is not empty
-                    <>
-                    
+                    <> 
                         <p>Title: {product.title}</p>
                         <p>Category: {product.category}</p>
                         <p>Stock: {product.stock}</p>
@@ -79,9 +90,12 @@ function ProductDetail({ userId, fetchProducts, products, setProducts, cartItems
                         <p>Seller Name: {product.seller_name}</p>
                         <input className='col-2' onChange={onChange} type='number'name='quantity' min={1} max={100} defaultValue={1}/>
                         <button className='btn btn-primary col-2 mb-2' onClick={AddToCart}>Add to cart</button>
-                        
+                        <AddToCartModal showAddToCartModal={showAddToCartModal} toggleAddToCartModal={toggleAddToCartModal} addToCartProductId={addToCartProductId} product={product} newCartItem={newCartItem} fetchProduct={fetchProduct}/>
                         <Link to={`/mynetmall/store/${product.seller}`}>
                             <button className='btn btn-info'>Visit the seller's store</button>
+                        </Link>
+                        <Link to={'/'}>
+                            <button className='btn btn-secondary'>Return</button>
                         </Link>
                     </>
                 )}

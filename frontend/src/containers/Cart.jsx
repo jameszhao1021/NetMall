@@ -3,9 +3,10 @@ import { useState, useEffect } from 'react'
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import ProductDeleteModal from '../components/ProductDeleteModal';
+import ItemDeleteModal from '../components/ItemDeleteModal';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
+
 
 function Cart({ userId, userName, cartItems, setCartItems }) {
   const [loading, setLoading] = useState(true);
@@ -18,17 +19,24 @@ function Cart({ userId, userName, cartItems, setCartItems }) {
   const headers = {
     'Authorization': `Bearer ${token}`,
   };
- const [showDeleteModal, setShowDeleteModal] = useState(false)
- const [deleteProductId, setDeleteProductId] = useState(null)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [deleteItemId, setDeleteItemId] = useState(null)
+  const [totalQuantity, setTotalQuantity] = useState(null)
+  const [totalPrice, setTotalPrice] = useState(null)
 
-  function toggleDeleteModal(productId) {
-    console.log('Deleting product with ID:', productId);
-    setDeleteProductId(productId);
+  useEffect(() => {
+    setTotalQuantity(cartItems.reduce((acc, item) => acc + item.quantity, 0));
+    setTotalPrice(cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0));
+  }, [cartItems]);
+
+
+  function toggleDeleteModal(itemId) {
+    console.log('Deleting product with ID:', itemId);
+    setDeleteItemId(itemId);
     setShowDeleteModal(prev => !prev);
   }
 
 
-  
   const fetchCartItems = () => {
 
     axios.get(`/mynetmall/my-cart/${userId}`, { headers, withCredential: true })
@@ -41,10 +49,6 @@ function Cart({ userId, userName, cartItems, setCartItems }) {
       });
   };
 
-
-
-
-
   useEffect(() => {
     if (userId) { // Fetch data only if userId is available
       try {
@@ -56,13 +60,12 @@ function Cart({ userId, userName, cartItems, setCartItems }) {
     }
   }, [userId]); //
 
-
   const handleDelete = (id) => {
     console.log('Deleting product with ID:', id);
-    axios.delete(`/mynetmall/my-store/${id}/`, { headers, withCredential: true })
+    axios.delete(`/mynetmall/my-cart/${id}`, { headers, withCredential: true })
       .then(res => {
         fetchCartItems();
-        toggleDeleteModal(); // Close the modal after deleting the product
+        toggleDeleteModal();
       })
       .catch(err => {
         console.error('Error deleting detail:', err);
@@ -73,33 +76,44 @@ function Cart({ userId, userName, cartItems, setCartItems }) {
     return <div>Loading...</div>; // Render loading indicator while fetching products
   }
 
+
+
   return (
     <div className='container'>
       <h1>Cart</h1>
-      <div className='d-flex row'>
-        {
-          cartItems
-            // .filter(product => product.seller === userId) // Filter products by seller equal to userId
-            .map(cartItem => (
+      <div className='d-flex'>
+        <div className='col-md-8'>
+          {
+            cartItems
+              // .filter(product => product.seller === userId) // Filter products by seller equal to userId
+              .map(cartItem => (
 
-              <div key={cartItem.id} className='card col-md-3'>
-             
-                <p>Title: {cartItem.title}</p>
-                <p>Quantity: {cartItem.quantity}</p>
-                <p>Price: ${cartItem.price * cartItem.quantity}</p>
-                <div className='row d-flex justify-content-evenly mb-2'>
-                  {/* <button className='btn btn-danger col-4' onClick={() => { handleDelete(cartItem.id) }}>Delete</button> */}
-                  <button className='btn btn-danger col-4' onClick={()=>toggleDeleteModal(cartItem.id)}>Delete</button>
-                 
+                <div key={cartItem.id} className='card '>
 
-                  {/* <ProductDeleteModal showDeleteModal={showDeleteModal} toggleDeleteModal={toggleDeleteModal} handleDelete={handleDelete} deleteProductId={deleteProductId} /> */}
-  
+                  <p>Title: {cartItem.title}</p>
+                  <p>Quantity: {cartItem.quantity}</p>
+                  <p>Price: ${cartItem.price * cartItem.quantity}</p>
+                  <div className='row d-flex justify-content-evenly mb-2'>
+                    {/* <button className='btn btn-danger col-4' onClick={() => { handleDelete(cartItem.id) }}>Delete</button> */}
+                    <button className='btn btn-danger col-4' onClick={() => toggleDeleteModal(cartItem.id)}>Delete</button>
+
+
+                    <ItemDeleteModal showDeleteModal={showDeleteModal} toggleDeleteModal={toggleDeleteModal} handleDelete={handleDelete} deleteItemId={deleteItemId} />
+
+                  </div>
                 </div>
-              </div>
 
-            ))
-        }
+              ))
+          }
 
+        </div>
+        <div className='col-md-4'>
+          <div className='card'>
+            <p>Quantity: {totalQuantity}</p>
+            <p>Total: ${totalPrice}</p>
+            <button className='btn btn-info'>Go to checkout</button>
+          </div>
+        </div>
       </div>
 
     </div>

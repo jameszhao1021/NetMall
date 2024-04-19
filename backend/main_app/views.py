@@ -77,8 +77,9 @@ class ProductView(BaseCRUDView):
 
     SelectedModel = Product
     SelectedSerializer = ProductSerializer
-   
-
+    permission_classes = []
+    authentication_classes = [] 
+    
     # permission_classes = [IsAuthenticated]  # Ensure user is authenticated
 
     # def get(self, request):
@@ -96,8 +97,10 @@ class MyProductView(BaseCRUDView):
     SelectedModel = Product
     SelectedSerializer = ProductSerializer
     permission_classes = [IsAuthenticated]
+
+
     def get(self, request, pk):
-        # print(f'the user id is: {request.user.id}')
+        print(f'the user id is: {request.user.id}')
         queryset = self.SelectedModel.objects.filter(seller=pk)
         serializer = self.SelectedSerializer(queryset, many=True)
         return Response(serializer.data)
