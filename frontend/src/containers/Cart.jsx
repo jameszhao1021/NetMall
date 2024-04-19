@@ -7,7 +7,7 @@ import ProductDeleteModal from '../components/ProductDeleteModal';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 
-function Cart({ products, setProducts, fetchProducts, userId, userName }) {
+function Cart({ userId, userName, cartItems, setCartItems }) {
   const [loading, setLoading] = useState(true);
 
   const csrfToken = document.cookie.split('; ').find(cookie => cookie.startsWith('csrftoken='))?.split('=')[1];
@@ -33,7 +33,7 @@ function Cart({ products, setProducts, fetchProducts, userId, userName }) {
 
     axios.get(`/mynetmall/my-cart/${userId}`, { headers, withCredential: true })
       .then(res => {
-        // setProducts(res.data);
+        setCartItems(res.data);
         console.log(res.data)
       })
       .catch(err => {
@@ -76,7 +76,31 @@ function Cart({ products, setProducts, fetchProducts, userId, userName }) {
   return (
     <div className='container'>
       <h1>Cart</h1>
+      <div className='d-flex row'>
+        {
+          cartItems
+            // .filter(product => product.seller === userId) // Filter products by seller equal to userId
+            .map(cartItem => (
 
+              <div key={cartItem.id} className='card col-md-3'>
+             
+                <p>Title: {cartItem.title}</p>
+                <p>Quantity: {cartItem.quantity}</p>
+                <p>Price: ${cartItem.price * cartItem.quantity}</p>
+                <div className='row d-flex justify-content-evenly mb-2'>
+                  {/* <button className='btn btn-danger col-4' onClick={() => { handleDelete(cartItem.id) }}>Delete</button> */}
+                  <button className='btn btn-danger col-4' onClick={()=>toggleDeleteModal(cartItem.id)}>Delete</button>
+                 
+
+                  {/* <ProductDeleteModal showDeleteModal={showDeleteModal} toggleDeleteModal={toggleDeleteModal} handleDelete={handleDelete} deleteProductId={deleteProductId} /> */}
+  
+                </div>
+              </div>
+
+            ))
+        }
+
+      </div>
 
     </div>
   )

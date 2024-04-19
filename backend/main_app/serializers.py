@@ -26,6 +26,8 @@ class CartSerializer(serializers.ModelSerializer):
             fields = '__all__'
 
 class CartItemSerializer(serializers.ModelSerializer):
+        title = serializers.CharField(source='productId.title', read_only=True)
+        price = serializers.IntegerField(source='productId.price', read_only=True)
         class Meta:
             model = CartItem
             fields = '__all__'

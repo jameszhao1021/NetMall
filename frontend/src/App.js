@@ -71,8 +71,8 @@ const [editCartItems, setEditCartItems] = useState(null);
         <Route path='/mynetmall/store/:sellerId' element={<SellerStore products={products} setProducts={setProducts} />}/>
         <Route path='/mynetmall/my-store/add-product' element={<AddProduct newProduct={newProduct} setNewProduct={setNewProduct} products={products} setProducts={setProducts} fetchProducts={fetchProducts}/>}/>
         <Route path='/mynetmall/my-store/edit-product/:productId' element={<EditProduct newProduct={newProduct} setNewProduct={setNewProduct} products={products} editProduct={editProduct} setEditProduct={setEditProduct} fetchProducts={fetchProducts}/>}/>
-        <Route path='/products/:productId' element={<ProductDetail fetchProducts={fetchProducts} products={products} setProducts={setProducts}/>} />
-        <Route path='/mynetmall/my-cart/:uid' element={<Cart />} />
+        <Route path='/products/:productId' element={<ProductDetail fetchProducts={fetchProducts} products={products} setProducts={setProducts} cartItems={cartItems} setCartItems={setCartItems}/>} />
+        <Route path='/mynetmall/my-cart/:uid' element={<Cart cartItems={cartItems} setCartItems={setCartItems}/>} />
       </Routes>
     </Layout>
 
