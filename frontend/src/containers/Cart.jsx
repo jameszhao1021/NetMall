@@ -23,6 +23,7 @@ function Cart({ userId, userName, cartItems, setCartItems }) {
   const [deleteItemId, setDeleteItemId] = useState(null)
   const [totalQuantity, setTotalQuantity] = useState(null)
   const [totalPrice, setTotalPrice] = useState(null)
+  const [editedQuantity, setEditedQuantity] = useState({});
 
   useEffect(() => {
     setTotalQuantity(cartItems.reduce((acc, item) => acc + item.quantity, 0));
@@ -72,6 +73,53 @@ function Cart({ userId, userName, cartItems, setCartItems }) {
       });
   };
 
+
+  const handleQuantityChange = (itemId, quantity) => {
+    setEditedQuantity({ ...editedQuantity, [itemId]: quantity });
+  };
+
+  const handleQuantityBlur = (cartItem) => {
+    const newQuantity = editedQuantity[cartItem.id];
+    if (newQuantity !== undefined) {
+      axios.put(`/mynetmall/my-cart/${cartItem.id}`, { 
+        cartId: cartItem.cartId, 
+        productId: cartItem.productId,
+        quantity: newQuantity 
+      }, { headers, withCredential: true })
+        .then(res => {
+          fetchCartItems();
+        })
+        .catch(err => {
+          console.error('Error updating quantity:', err);
+        });
+    }
+  };
+
+  const handleMinus = (cartItem) => {
+    const currentQuantity = editedQuantity[cartItem.id] !== undefined ? parseInt(editedQuantity[cartItem.id]) : cartItem.quantity;
+    const newQuantity = Math.max(currentQuantity - 1, 1); // Ensure quantity doesn't go below 1
+    setEditedQuantity({ ...editedQuantity, [cartItem.id]: newQuantity });
+  };
+  
+  const handlePlus = (cartItem) => {
+    const currentQuantity = editedQuantity[cartItem.id] !== undefined ? parseInt(editedQuantity[cartItem.id]) : cartItem.quantity;
+    const newQuantity = currentQuantity + 1;
+    setEditedQuantity({ ...editedQuantity, [cartItem.id]: newQuantity });
+  };
+  
+  useEffect(() => {
+    // Handle quantity blur when editedQuantity changes
+    Object.keys(editedQuantity).forEach(itemId => {
+      const editedItemId = parseInt(itemId);
+      const editedItemQuantity = editedQuantity[editedItemId];
+      const cartItem = cartItems.find(item => item.id === editedItemId);
+  
+      if (cartItem && editedItemQuantity !== undefined && editedItemQuantity !== cartItem.quantity) {
+        handleQuantityBlur(cartItem);
+      }
+    });
+  }, [editedQuantity, cartItems, handleQuantityBlur]);
+
   if (loading) {
     return <div>Loading...</div>; // Render loading indicator while fetching products
   }
@@ -91,7 +139,16 @@ function Cart({ userId, userName, cartItems, setCartItems }) {
                 <div key={cartItem.id} className='card '>
 
                   <p>Title: {cartItem.title}</p>
-                  <p>Quantity: {cartItem.quantity}</p>
+                  <p>Quantity:
+                  <button className="btn btn-secondary" onClick={() => handleMinus(cartItem)}>-</button>
+                <input
+                  type='text'
+                  value={editedQuantity[cartItem.id] !== undefined ? editedQuantity[cartItem.id] : cartItem.quantity}
+                  onChange={(e) => handleQuantityChange(cartItem.id, e.target.value)}
+                  onBlur={() => handleQuantityBlur(cartItem)}
+                />
+                <button className="btn btn-secondary" onClick={() => handlePlus(cartItem)}>+</button>
+              </p>
                   <p>Price: ${cartItem.price * cartItem.quantity}</p>
                   <div className='row d-flex justify-content-evenly mb-2'>
                     {/* <button className='btn btn-danger col-4' onClick={() => { handleDelete(cartItem.id) }}>Delete</button> */}
