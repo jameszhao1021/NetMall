@@ -5,11 +5,10 @@ import { connect } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 
-function EditProduct({ userId, products, newProduct, setNewProduct, EditProduct, setEditProduct, fetchProducts }) {
+function EditProduct({ userId, products, newProduct, setNewProduct, fetchProducts }) {
     let { productId } = useParams();
     const csrfToken = document.cookie.split('; ').find(cookie => cookie.startsWith('csrftoken=')).split('=')[1];
     axios.defaults.headers.common['X-CSRFToken'] = csrfToken;
-
 
 
     console.log('product id:' + productId)
@@ -18,9 +17,7 @@ function EditProduct({ userId, products, newProduct, setNewProduct, EditProduct,
 
     const product = products.find(product => product.id === productId);
 
-
     const navigate = useNavigate();
-
 
     useEffect(() => {
         const csrfToken = document.cookie.split('; ').find(cookie => cookie.startsWith('csrftoken=')).split('=')[1];

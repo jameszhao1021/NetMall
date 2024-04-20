@@ -8,7 +8,7 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 
 
-function Cart({ userId, userName, cartItems, setCartItems }) {
+function Cart({ userId, cartItems, setCartItems }) {
   const [loading, setLoading] = useState(true);
 
   const csrfToken = document.cookie.split('; ').find(cookie => cookie.startsWith('csrftoken='))?.split('=')[1];
@@ -24,6 +24,7 @@ function Cart({ userId, userName, cartItems, setCartItems }) {
   const [totalQuantity, setTotalQuantity] = useState(null)
   const [totalPrice, setTotalPrice] = useState(null)
   const [editedQuantity, setEditedQuantity] = useState({});
+  const [previousQuantity, setPreviousQuantity] = useState({});
 
   useEffect(() => {
     setTotalQuantity(cartItems.reduce((acc, item) => acc + item.quantity, 0));
@@ -73,18 +74,40 @@ function Cart({ userId, userName, cartItems, setCartItems }) {
       });
   };
 
-
-  const handleQuantityChange = (itemId, quantity) => {
-    setEditedQuantity({ ...editedQuantity, [itemId]: quantity });
+  const handleInputFocus = (itemId) => {
+    // Store the previous valid quantity when the input field is focused
+    setPreviousQuantity({ ...previousQuantity, [itemId]: editedQuantity[itemId] });
   };
 
+  const handleQuantityChange = (itemId, quantity) => {
+    let newQuantity;
+    if (quantity.trim() === '') {
+      // If the input is empty, set the new quantity to an empty string
+      newQuantity = '';
+    } else {
+      // Otherwise, parse the input value to an integer
+      newQuantity = parseInt(quantity);
+      // Check if the parsed value is NaN
+      if (isNaN(newQuantity)) {
+        // If it's NaN, set it back to the previous valid value or to an empty string
+        newQuantity = editedQuantity[itemId] !== undefined ? editedQuantity[itemId] : '';
+      }
+    }
+    setEditedQuantity({ ...editedQuantity, [itemId]: newQuantity });
+  };
+  
+
   const handleQuantityBlur = (cartItem) => {
-    const newQuantity = editedQuantity[cartItem.id];
-    if (newQuantity !== undefined) {
-      axios.put(`/mynetmall/my-cart/${cartItem.id}`, { 
-        cartId: cartItem.cartId, 
+    let newQuantity = editedQuantity[cartItem.id];
+    // if (newQuantity === undefined || newQuantity === '' || newQuantity === null) {
+    //   newQuantity = previousQuantity[cartItem.id];
+    // }
+  
+    if (newQuantity !== undefined && newQuantity <= cartItem.stock && newQuantity && newQuantity!==null) {
+      axios.put(`/mynetmall/my-cart/${cartItem.id}`, {
+        cartId: cartItem.cartId,
         productId: cartItem.productId,
-        quantity: newQuantity 
+        quantity: newQuantity
       }, { headers, withCredential: true })
         .then(res => {
           fetchCartItems();
@@ -100,26 +123,40 @@ function Cart({ userId, userName, cartItems, setCartItems }) {
     const newQuantity = Math.max(currentQuantity - 1, 1); // Ensure quantity doesn't go below 1
     setEditedQuantity({ ...editedQuantity, [cartItem.id]: newQuantity });
   };
-  
+
   const handlePlus = (cartItem) => {
     const currentQuantity = editedQuantity[cartItem.id] !== undefined ? parseInt(editedQuantity[cartItem.id]) : cartItem.quantity;
     const newQuantity = currentQuantity + 1;
     setEditedQuantity({ ...editedQuantity, [cartItem.id]: newQuantity });
   };
-  
+
   useEffect(() => {
     // Handle quantity blur when editedQuantity changes
     Object.keys(editedQuantity).forEach(itemId => {
       const editedItemId = parseInt(itemId);
       const editedItemQuantity = editedQuantity[editedItemId];
       const cartItem = cartItems.find(item => item.id === editedItemId);
-  
+
       if (cartItem && editedItemQuantity !== undefined && editedItemQuantity !== cartItem.quantity) {
         handleQuantityBlur(cartItem);
       }
     });
   }, [editedQuantity, cartItems, handleQuantityBlur]);
-
+  // useEffect(() => {
+  //   // Update editedQuantity when previousQuantity changes
+  //   Object.keys(previousQuantity).forEach(itemId => {
+  //     const previousItemId = parseInt(itemId);
+  //     const previousItemQuantity = previousQuantity[previousItemId];
+  //     const cartItem = cartItems.find(item => item.id === previousItemId);
+  
+  //     if (cartItem && previousItemQuantity !== undefined && previousItemQuantity !== '') {
+  //       setEditedQuantity(prevEditedQuantity => ({
+  //         ...prevEditedQuantity,
+  //         [previousItemId]: previousItemQuantity
+  //       }));
+  //     }
+  //   });
+  // }, [previousQuantity, cartItems]);
   if (loading) {
     return <div>Loading...</div>; // Render loading indicator while fetching products
   }
@@ -137,21 +174,27 @@ function Cart({ userId, userName, cartItems, setCartItems }) {
               .map(cartItem => (
 
                 <div key={cartItem.id} className='card '>
-
+                  <p>Seller: {cartItem.seller}</p>
                   <p>Title: {cartItem.title}</p>
-                  <p>Quantity:
-                  <button className="btn btn-secondary" onClick={() => handleMinus(cartItem)}>-</button>
-                <input
-                  type='text'
-                  value={editedQuantity[cartItem.id] !== undefined ? editedQuantity[cartItem.id] : cartItem.quantity}
-                  onChange={(e) => handleQuantityChange(cartItem.id, e.target.value)}
-                  onBlur={() => handleQuantityBlur(cartItem)}
-                />
-                <button className="btn btn-secondary" onClick={() => handlePlus(cartItem)}>+</button>
-              </p>
+                  <p>Quantity:</p>
+                  <div className='quantityEditPanel'>
+                    <button className="btn btn-secondary" onClick={() => handleMinus(cartItem)}>-</button>
+                    <input
+
+                      type='text'
+                      value={editedQuantity[cartItem.id] !== undefined ? editedQuantity[cartItem.id] : cartItem.quantity}
+                      onChange={(e) => handleQuantityChange(cartItem.id, e.target.value)}
+                      // onFocus={() => handleInputFocus(cartItem.id)} 
+                      onBlur={() => handleQuantityBlur(cartItem)}
+                      style={{ maxWidth: '40px' }}
+                    />
+                    <button className="btn btn-secondary" onClick={() => handlePlus(cartItem)}>+</button>
+                  </div>
+                  <p>stock: {cartItem.stock}</p> 
+                  {editedQuantity[cartItem.id] && editedQuantity[cartItem.id] > cartItem.stock && <span style={{ color: 'red' }}>Only {cartItem.stock} left</span>} 
+                  {(editedQuantity[cartItem.id] === 0 ) && <span style={{ color: 'red' }}>Invalid quantity</span>}
                   <p>Price: ${cartItem.price * cartItem.quantity}</p>
                   <div className='row d-flex justify-content-evenly mb-2'>
-                    {/* <button className='btn btn-danger col-4' onClick={() => { handleDelete(cartItem.id) }}>Delete</button> */}
                     <button className='btn btn-danger col-4' onClick={() => toggleDeleteModal(cartItem.id)}>Delete</button>
 
 

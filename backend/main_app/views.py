@@ -101,7 +101,7 @@ class MyProductView(BaseCRUDView):
 
     def get(self, request, pk):
         print(f'the user id is: {request.user.id}')
-        queryset = self.SelectedModel.objects.filter(seller=pk)
+        queryset = self.SelectedModel.objects.filter(seller=pk).order_by('create_at')
         serializer = self.SelectedSerializer(queryset, many=True)
         return Response(serializer.data)
 
@@ -137,82 +137,6 @@ class SellerStoreView(BaseCRUDView):
         except self.SelectedModel.DoesNotExist:
             return Response({"message": "Products do not exist for this seller"}, status=status.HTTP_404_NOT_FOUND)
 
-# @api_view(['POST'])
-# def add_to_cart(request):
-#     # Extract data from the request
-#     user_id = request.data.get('user_id')
-#     product_id = request.data.get('product_id')
-#     quantity = request.data.get('quantity')
-
-#     # Create a new CartItem instance
-#     cart_item = CartItem.objects.create(user_id=user_id, product_id=product_id, quantity=quantity)
-
-#     # Serialize the CartItem instance
-#     serializer = CartItemSerializer(cart_item)
-
-#     return Response(serializer.data)
-
-# class CartView(BaseCRUDView):
-#     SelectedModel = CartItem
-#     SelectedSerializer = CartItemSerializer
-#     permission_classes = [IsAuthenticated]
-
-#     def get(self, request, pk):
-#         cart = Cart.objects.get(userId=pk)
-#         queryset = self.SelectedModel.objects.filter(cartId=cart)
-#         serializer = self.SelectedSerializer(queryset, many=True)
-#         return Response(serializer.data)
-
-#     # def post(self, request):
-#     #     serializer = self.SelectedSerializer(data=request.data)
-#     #     if serializer.is_valid():
-#     #         serializer.save(user=request.user)
-#     #         return Response(serializer.data, status=status.HTTP_201_CREATED)
-#     #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-#         def post(self, request, pk):
-#             # Extract data from the request
-#             user_id = pk
-#             product_id = request.data.get('productId')
-#             quantity = request.data.get('quantity')
-#             cart = Cart.objects.get(userId=user_id)
-        
-#             # Check if the item already exists in the cart
-#             try:
-#                 cart_item = CartItem.objects.get(cartId=cart, productId=product_id)
-#                 # If the item exists, update its quantity
-#                 cart_item.quantity += int(quantity)
-#                 cart_item.save()
-#                 # Serialize the updated cart item
-#                 serializer = CartItemSerializer(cart_item)
-#                 return Response(serializer.data, status=status.HTTP_200_OK)
-#             except CartItem.DoesNotExist:
-#                 # If the item does not exist, create a new cart item
-#                 cart_item = CartItem.objects.create(cartId=cart, productId_id=product_id, quantity=quantity)
-#                 # Serialize the new cart item
-#                 serializer = CartItemSerializer(cart_item)
-#                 return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-#         def put(self, request, pk):
-#             try:
-#                 instance = self.SelectedModel.objects.get(pk=pk)
-#             except self.SelectedModel.DoesNotExist:
-#                 return Response({"message": "Cart item does not exist"}, status=status.HTTP_404_NOT_FOUND)
-
-#             serializer = self.SelectedSerializer(instance, data=request.data)
-#             if serializer.is_valid():
-#                 serializer.save()
-#                 return Response(serializer.data)
-#             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-#         def delete(self, request, pk):
-#             try:
-#                 instance = self.SelectedModel.objects.get(pk=pk)
-#             except self.SelectedModel.DoesNotExist:
-#                 return Response({"message": "Cart item does not exist"}, status=status.HTTP_404_NOT_FOUND)
-
-#             instance.delete()
-#             return Response(status=status.HTTP_204_NO_CONTENT)
 
 class CartView(APIView):
     permission_classes = [IsAuthenticated]
@@ -228,7 +152,7 @@ class CartView(APIView):
         if not cart:
             return Response({"message": "Cart not found"}, status=status.HTTP_404_NOT_FOUND)
 
-        queryset = CartItem.objects.filter(cartId=cart)
+        queryset = CartItem.objects.filter(cartId=cart).order_by('create_at')
         serializer = CartItemSerializer(queryset, many=True)
         return Response(serializer.data)
 

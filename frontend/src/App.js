@@ -64,7 +64,7 @@ function App() {
             <Route path='/reset-password' element={<ResetPassword />} />
             <Route path='/password/reset/confirm/:uid/:token' element={<ResetPasswordConfirm />} />
             <Route path='/activate/:uid/:token' element={<Activate />} />
-            <Route path='/mynetmall/my-store/:uid' element={<MyStore products={products} setProducts={setProducts} fetchProducts={fetchProducts} />} />
+            <Route path='/mynetmall/my-store' element={<MyStore products={products} setProducts={setProducts} fetchProducts={fetchProducts} />} />
             <Route path='/mynetmall/store/:sellerId' element={<SellerStore products={products} setProducts={setProducts} />} />
             <Route path='/mynetmall/my-store/add-product' element={<AddProduct newProduct={newProduct} setNewProduct={setNewProduct} products={products} setProducts={setProducts} fetchProducts={fetchProducts} />} />
             <Route path='/mynetmall/my-store/edit-product/:productId' element={<EditProduct newProduct={newProduct} setNewProduct={setNewProduct} products={products} editProduct={editProduct} setEditProduct={setEditProduct} fetchProducts={fetchProducts} />} />

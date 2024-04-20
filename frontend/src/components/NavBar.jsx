@@ -30,7 +30,7 @@ function NavBar({ isAuthenticated, logout, userId }) {
                   </Dropdown.Toggle>
                   <Dropdown.Menu>
                      <Dropdown.Item href='/mynetmall/purchase-history'>Purchase History</Dropdown.Item>
-                     <Dropdown.Item href={`/mynetmall/my-store/${userId}`}>My Store</Dropdown.Item>
+                     <Dropdown.Item href='/mynetmall/my-store'>My Store</Dropdown.Item>
                   </Dropdown.Menu>
                </Dropdown>
             </li>

@@ -59,17 +59,9 @@ function SellerStore({ products, setProducts, userId, userName }) {
 
     return (
         <div className='container'>
-
-
-
-
             <h1>Store name: {sellerName}</h1>
-
-
             <div className='d-flex row'>
-
                 {
-
                     products
                         // Filter products by seller equal to userId
                         .map(product => (
@@ -83,11 +75,8 @@ function SellerStore({ products, setProducts, userId, userName }) {
                               </div>
                             </Link>
                           </div>
-
                         ))
-
                 }
-
             </div>
         </div>
     )

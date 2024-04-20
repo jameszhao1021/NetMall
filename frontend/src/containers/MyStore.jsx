@@ -98,7 +98,6 @@ const [showDeleteModal, setShowDeleteModal] = useState(false)
       <div className='d-flex row'>
         {
           products
-            // .filter(product => product.seller === userId) // Filter products by seller equal to userId
             .map(product => (
 
               <div key={product.id} className='card col-md-3'>
@@ -160,9 +159,6 @@ const mapStateToProps = state => ({
   userId: state.auth.user ? state.auth.user.id : null,
   userName: state.auth.user ? state.auth.user.name : null
 })
-
-
-// export default MyStore;
 
 
 export default connect(mapStateToProps, {})(MyStore)

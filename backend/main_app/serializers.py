@@ -16,6 +16,7 @@ class ProductImgSerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
         product_images = ProductImgSerializer(many=True, read_only=True)  # This will include all associated product images
         seller_name = serializers.CharField(source='seller.name', read_only=True)
+        seller_id = serializers.CharField(source='seller.id', read_only=True)
         class Meta:
             model = Product
             fields = '__all__'
@@ -28,6 +29,8 @@ class CartSerializer(serializers.ModelSerializer):
 class CartItemSerializer(serializers.ModelSerializer):
         title = serializers.CharField(source='productId.title', read_only=True)
         price = serializers.IntegerField(source='productId.price', read_only=True)
+        stock = serializers.IntegerField(source='productId.stock', read_only=True)
+        seller = serializers.CharField(source='productId.seller.name', read_only=True)
         class Meta:
             model = CartItem
             fields = '__all__'
