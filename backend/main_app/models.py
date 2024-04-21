@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
-
+import random 
 
 class UserManager(BaseUserManager):
     def create_user(self, email, name, password=None, **extra_fields):
@@ -67,7 +67,7 @@ class Product(models.Model):
     seller = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default = CATEGORY_CHOICES[0][0])
-    price = models.FloatField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
     stock = models.IntegerField()
     condition = models.CharField(max_length=20, choices=CONDITION_CHOICES, default = CONDITION_CHOICES[0][0])
     thumbnail_url = models.URLField(max_length=200, blank=True, null=True)
@@ -95,12 +95,13 @@ class CartItem(models.Model):
 
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    order_number = models.CharField(max_length=15, unique=True, blank=True)
     first_name = models.CharField(max_length=20)
     last_name = models.CharField(max_length=20)
     country = models.CharField(max_length=50)
     street_address = models.CharField(max_length=50)
     street_address_2 = models.CharField(max_length=50, blank=True, null=True)
-    phone = models.IntegerField(max_length=20)
+    phone = models.IntegerField()
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -112,10 +113,18 @@ class Order(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.order_number:
+            super().save(*args, **kwargs)  # Save the object to generate the id
             self.order_number = self.generate_order_number()
-        super().save(*args, **kwargs)
+            self.save()  # Save again to update the order_number
+        else:
+            super().save(*args, **kwargs)
 
     def __str__(self):
         return f"Order for {self.user.email}"
 
    
+class OrderItem(models.Model):
+    order = models.ForeignKey('Order', related_name='items', on_delete=models.CASCADE)
+    product = models.ForeignKey('Product', on_delete=models.PROTECT)
+    quantity = models.PositiveIntegerField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)

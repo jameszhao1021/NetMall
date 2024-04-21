@@ -57,38 +57,75 @@ function AllCheckout({ userId, cartItems, setCartItems, delivery, setDelivery })
   }, [userId]); //
 
 
-  const onSubmit = () => {
-    // Iterate through cart items and create order objects
+  // const onSubmit = () => {
+  //   // Iterate through cart items and create order objects
+  //   const orders = cartItems.map(cartItem => ({
+  //     user: userId,
+  //     cart_item: cartItem,
+  //     quantity: cartItem.quantity,
+  //     price: cartItem.price,
+  //     deliveryDetails: delivery // Assuming delivery contains required details
+  //   }));
+
+  //   const deliveryDetails = {
+  //     first_name: delivery.get('first_name'),
+  //     last_name: delivery.get('last_name'),
+  //     country: delivery.get('country'),
+  //     street_address: delivery.get('street_address'),
+  //     street_address_2: delivery.get('street_address_2'),
+  //     phone: delivery.get('phone'),
+  //   };
+
+  //   axios.post('/mynetmall/pay', {orders, deliveryDetails}, { headers, withCredential: true })
+  //   .then(res => {
+        
+  //      console.log('created order')
+  //      console.log(res.data)
+  //       navigate('/');
+  //   })
+  //   .catch(err => {
+  //       console.error('Error adding new product:', err);
+  //   });
+
+  // }
+  function onSubmit(e){
+    e.preventDefault();
+   
     const orders = cartItems.map(cartItem => ({
       user: userId,
-      cart_item: cartItem,
+      cart_item: cartItem.id, // Assuming the server expects cart item ID
       quantity: cartItem.quantity,
-      price: cartItem.price,
-      deliveryDetails: delivery // Assuming delivery contains required details
+      price: cartItem.price
+      
     }));
 
-    const deliveryDetails = {
-      first_name: delivery.get('first_name'),
-      last_name: delivery.get('last_name'),
-      country: delivery.get('country'),
-      street_address: delivery.get('street_address'),
-      street_address_2: delivery.get('street_address_2'),
-      phone: delivery.get('phone'),
+    const cartItemIds = cartItems.map(cartItem => cartItem.id);
+
+    const postData = {
+      user_id: userId,
+      cart_item_ids: cartItemIds,
+      first_name: delivery.first_name,
+      last_name: delivery.last_name,
+      country: delivery.country,
+      street_address: delivery.street_address,
+      street_address_2: delivery.street_address_2,
+      phone: delivery.phone
+      
     };
-
-    axios.post('/mynetmall/pay', {orders, deliveryDetails}, { headers, withCredential: true })
-    .then(res => {
-        
-       console.log('created order')
-       console.log(res.data)
+    const requestData = {
+      ...postData,
+      user_id: userId,
+      cart_item_ids: cartItemIds
+  };
+    axios.post('/mynetmall/pay', requestData, { headers, withCredential: true })
+      .then(res => {
+        console.log('Order created:', res.data);
         navigate('/');
-    })
-    .catch(err => {
-        console.error('Error adding new product:', err);
-    });
-
-  }
-
+      })
+      .catch(err => {
+        console.error('Error creating order:', err);
+      });
+  };
 
   if (loading) {
     return <div>Loading...</div>; // Render loading indicator while fetching products
@@ -104,7 +141,6 @@ function AllCheckout({ userId, cartItems, setCartItems, delivery, setDelivery })
         <div className='col-md-8'>
           {
             cartItems
-              // .filter(product => product.seller === userId) // Filter products by seller equal to userId
               .map(cartItem => (
 
                 <div key={cartItem.id} className='card '>
@@ -126,29 +162,29 @@ function AllCheckout({ userId, cartItems, setCartItems, delivery, setDelivery })
           <div className='card'>
             <p>Quantity: {totalQuantity}</p>
             <p>Total: ${totalPrice}</p>
-            <button className='btn btn-info'>Comfirm Payment</button>
+            <button className='btn btn-info' onClick={onSubmit}>Comfirm Payment</button>
           </div>
         </div>
       </div>
 
  <hr></hr>
       <h3>Send to</h3>
-      <form className='col-md-8'>
+      <form className='col-md-8' onSubmit={onSubmit}>
         <div className="form-group mb-2">
           <label htmlFor='id_first_name'>First Name: </label>
-          <input type='text' className='form-control' id='id_first_name' name='first_name' onChange={onChange} />
+          <input type='text' className='form-control' id='id_first_name' name='first_name' onChange={onChange} required/>
         </div>
         <div className="form-group mb-2">
           <label htmlFor='id_last_name'>Last Name: </label>
-          <input type='text' className='form-control' id='id_last_name' name='last_name' onChange={onChange} />
+          <input type='text' className='form-control' id='id_last_name' name='last_name' onChange={onChange} required/>
         </div>
         <div className="form-group">
           <label>Country: </label>
-         <CountrySelectForm onChange={onChange}/>
+         <CountrySelectForm onChange={onChange} required/>
         </div>
         <div className="form-group mb-2">
           <label htmlFor='id_street_address'>Street Address: </label>
-          <input type='text' className='form-control' id='id_street_address' name='street_address' onChange={onChange} />
+          <input type='text' className='form-control' id='id_street_address' name='street_address' onChange={onChange} required/>
         </div>
         <div className="form-group mb-2">
         <label htmlFor='id_street_address_2'>Street Address 2: </label>
@@ -156,9 +192,9 @@ function AllCheckout({ userId, cartItems, setCartItems, delivery, setDelivery })
         </div>
         <div className="form-group mb-2">
         <label htmlFor='id_phone'>Phone: </label>
-          <input type='text' className='form-control' id='id_phone' name='phone' onChange={onChange} />
+          <input type='text' className='form-control' id='id_phone' name='phone' onChange={onChange}required />
         </div>
-
+        <button type="submit" className='btn btn-info' >Comfirm Payment</button>
        
       </form>
 
