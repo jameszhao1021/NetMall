@@ -124,7 +124,6 @@ class SelectedProductView(BaseCRUDView):
             return Response({"message": "Product does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
 
-
 class SellerStoreView(BaseCRUDView):
     SelectedModel = Product  # Corrected attribute name
     SelectedSerializer = ProductSerializer
@@ -196,3 +195,48 @@ class CartView(APIView):
 
         cart_item.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+class OrderView(BaseCRUDView):
+    SelectedModel = Order
+    SelectedSerializer = OrderSerializer
+
+    def post(self, request):
+        user_id = request.data.get('user_id')
+        cart_item_ids = request.data.get('cart_item_ids')
+
+        cart_items = CartItem.objects.filter(id__in=cart_item_ids)
+
+        # Group cart items by seller
+        cart_items_by_seller = {}
+        for cart_item in cart_items:
+            seller_id = cart_item.product.seller.id
+            if seller_id not in cart_items_by_seller:
+                cart_items_by_seller[seller_id] = []
+            cart_items_by_seller[seller_id].append(cart_item)
+
+        # Create orders for each seller
+        for seller_id, seller_cart_items in cart_items_by_seller.items():
+            total_price = sum(cart_item.product.price * cart_item.quantity for cart_item in seller_cart_items)
+            
+            # Create the order with related data from cart items
+            order_data = {
+                'user': user_id,
+                'seller': seller_id,  # Include the seller ID in the order data
+                'total_price': total_price,
+            }
+
+            serializer = OrderSerializer(data=order_data)
+            if serializer.is_valid(raise_exception=True):
+                order = serializer.save()
+
+                # Create order items based on cart items
+                for cart_item in seller_cart_items:
+                    order_item_data = {
+                        'order': order.id,
+                        'product': cart_item.product.id,
+                        'quantity': cart_item.quantity,
+                        'price': cart_item.product.price,
+                    }
+                    OrderItem.objects.create(**order_item_data)
+
+        return Response(serializer.data)

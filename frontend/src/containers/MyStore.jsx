@@ -4,8 +4,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import ProductDeleteModal from '../components/ProductDeleteModal';
-import Modal from 'react-bootstrap/Modal';
-import Button from 'react-bootstrap/Button';
+
 
 function MyStore({ products, setProducts, fetchProducts, userId, userName }) {
   const [loading, setLoading] = useState(true);

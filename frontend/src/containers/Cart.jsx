@@ -4,8 +4,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import ItemDeleteModal from '../components/ItemDeleteModal';
-import Modal from 'react-bootstrap/Modal';
-import Button from 'react-bootstrap/Button';
+
 
 
 function Cart({ userId, cartItems, setCartItems }) {
@@ -211,7 +210,9 @@ function Cart({ userId, cartItems, setCartItems }) {
           <div className='card'>
             <p>Quantity: {totalQuantity}</p>
             <p>Total: ${totalPrice}</p>
+            <Link to='/mynetmall/pay'>
             <button className='btn btn-info'>Go to checkout</button>
+            </Link>
           </div>
         </div>
       </div>

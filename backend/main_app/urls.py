@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import ProductView, SelectedProductView, SellerStoreView, MyProductView, CartView, CreateCartView
+from .views import ProductView, SelectedProductView, SellerStoreView, MyProductView, CartView, CreateCartView, OrderView
 
 
 urlpatterns = [
@@ -12,4 +12,5 @@ urlpatterns = [
     path('mynetmall/my-store/edit-product/<int:pk>/', ProductView.as_view(), name='deleteproduct'),
     path('products/<int:pk>/', SelectedProductView.as_view(), name='selectedproduct'),
     path('mynetmall/my-cart/<int:pk>', CartView.as_view(), name='getcartitems'),
+    path('mynetmall/pay', OrderView.as_view(), name='pay'),
 ]

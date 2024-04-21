@@ -16,6 +16,7 @@ import SellerStore from './containers/SellerStore';
 import Cart from './containers/Cart';
 import { Provider } from 'react-redux';
 import store from './store';
+import AllCheckout from './containers/AllCheckout';
 import Layout from './hocs/Layout'
 
 function App() {
@@ -39,6 +40,16 @@ function App() {
     condition: '',
     description: '',
   });
+
+  const [delivery, setDelivery] = useState({
+    first_name:'',
+    last_name:'',
+    country:'',
+    street_address:'',
+    street_address_2:'',
+    phone:'',
+  })
+
 
   const [cartItems, setCartItems] = useState([]);
   const [editCartItems, setEditCartItems] = useState(null);
@@ -70,6 +81,7 @@ function App() {
             <Route path='/mynetmall/my-store/edit-product/:productId' element={<EditProduct newProduct={newProduct} setNewProduct={setNewProduct} products={products} editProduct={editProduct} setEditProduct={setEditProduct} fetchProducts={fetchProducts} />} />
             <Route path='/products/:productId' element={<ProductDetail fetchProducts={fetchProducts} products={products} setProducts={setProducts} cartItems={cartItems} setCartItems={setCartItems} />} />
             <Route path='/mynetmall/my-cart' element={<Cart cartItems={cartItems} setCartItems={setCartItems} />} />
+            <Route path='/mynetmall/pay' element={<AllCheckout cartItems={cartItems} setCartItems={setCartItems} delivery={delivery} setDelivery={setDelivery} />} />
           </Routes>
         </Layout>
       </Router>
