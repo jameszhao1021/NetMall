@@ -9,6 +9,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.decorators import api_view
 from django.views.decorators.csrf import csrf_exempt
 from django.db import transaction
+from django.shortcuts import get_object_or_404
 
 class BaseCRUDView(APIView):
     SelectedModel = None
@@ -197,50 +198,29 @@ class CartView(APIView):
         cart_item.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-# class OrderView(BaseCRUDView):
-#     SelectedModel = Order
-#     SelectedSerializer = OrderSerializer
+class SingleCheckoutView(APIView):
+    permission_classes = [IsAuthenticated]
 
-#     def post(self, request):
-#         user_id = request.data.get('user_id')
-#         cart_item_ids = request.data.get('cart_item_ids')
+    def get_cart(self, user_id):
+        try:
+            return Cart.objects.get(userId=user_id)
+        except Cart.DoesNotExist:
+            return None
 
-#         cart_items = CartItem.objects.filter(id__in=cart_item_ids)
+    def get(self, request, pk):
+        cart = self.get_cart(pk)
+        cart_item_id = request.query_params.get('cart_item_id') 
+        print({cart_item_id})
+        if not cart:
+            return Response({"message": "Cart not found"}, status=status.HTTP_404_NOT_FOUND)
 
-#         # Group cart items by seller
-#         cart_items_by_seller = {}
-#         for cart_item in cart_items:
-#             seller_id = cart_item.product.seller.id
-#             if seller_id not in cart_items_by_seller:
-#                 cart_items_by_seller[seller_id] = []
-#             cart_items_by_seller[seller_id].append(cart_item)
+        # Retrieve the cart item using filter and first (or get_object_or_404)
+        instance = CartItem.objects.filter(cartId=cart, pk=cart_item_id).first()
+        if not instance:
+            return Response({"message": "CartItem not found"}, status=status.HTTP_404_NOT_FOUND)
 
-#         # Create orders for each seller
-#         for seller_id, seller_cart_items in cart_items_by_seller.items():
-#             total_price = sum(cart_item.product.price * cart_item.quantity for cart_item in seller_cart_items)
-            
-#             # Create the order with related data from cart items
-#             order_data = {
-#                 'user': user_id,
-#                 'seller': seller_id,  # Include the seller ID in the order data
-#                 'total_price': total_price,
-#             }
-
-#             serializer = OrderSerializer(data=order_data)
-#             if serializer.is_valid(raise_exception=True):
-#                 order = serializer.save()
-
-#                 # Create order items based on cart items
-#                 for cart_item in seller_cart_items:
-#                     order_item_data = {
-#                         'order': order.id,
-#                         'product': cart_item.product.id,
-#                         'quantity': cart_item.quantity,
-#                         'price': cart_item.product.price,
-#                     }
-#                     OrderItem.objects.create(**order_item_data)
-
-#         return Response(serializer.data)
+        serializer = CartItemSerializer(instance)
+        return Response(serializer.data)
 
 class OrderView(BaseCRUDView):
     SelectedModel = Order
@@ -249,8 +229,6 @@ class OrderView(BaseCRUDView):
     def post(self, request):
         user_id = request.data.get('user_id')
         cart_item_ids = request.data.get('cart_item_ids')
-        first_name = request.data.get('first_name')
-        last_name = request.data.get('last_name')
        
         if not user_id or not cart_item_ids:
             return Response({"error": "user_id and cart_item_ids are required"}, status=status.HTTP_400_BAD_REQUEST)
@@ -269,7 +247,7 @@ class OrderView(BaseCRUDView):
             with transaction.atomic():
                 for seller_id, seller_cart_items in cart_items_by_seller.items():
                     total_price = sum(cart_item.productId.price * cart_item.quantity for cart_item in seller_cart_items)
-
+                  
                     order_data = {
                         'user': user_id,
                         'seller': seller_id,
@@ -305,3 +283,130 @@ class OrderView(BaseCRUDView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+class SingleOrderView(BaseCRUDView):
+    SelectedModel = Order
+    SelectedSerializer = OrderSerializer
+   
+    def post(self, request):
+        user_id = request.data.get('user_id')
+        cart_item_id = request.data.get('cart_item_id')
+      
+        if not user_id or not cart_item_id:
+            return Response({"error": "user_id and cart_item_id are required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            cart_item = CartItem.objects.get(pk=cart_item_id)
+            
+
+            with transaction.atomic():
+                    seller_id = cart_item.productId.seller.id
+                    total_price = cart_item.productId.price * cart_item.quantity 
+
+                    order_data = {
+                        'user': user_id,
+                        'seller': seller_id,
+                        'total_price': total_price,
+                        'first_name': request.data.get('first_name'),
+                        'last_name': request.data.get('last_name'),
+                        'country': request.data.get('country'),
+                        'street_address': request.data.get('street_address'),
+                        'street_address_2': request.data.get('street_address_2'),
+                        'phone': request.data.get('phone'),
+                    }
+
+                    serializer = OrderSerializer(data=order_data)
+                    if serializer.is_valid():
+                        order = serializer.save()
+
+                        product = cart_item.productId
+                        product.stock -= cart_item.quantity
+                        product.save()
+
+                        order_item_data = {
+                            'order': order,
+                            'product': product,
+                            'quantity': cart_item.quantity,
+                            'price': product.price,
+                        }
+                        OrderItem.objects.create(**order_item_data)
+                        CartItem.objects.filter(pk=cart_item_id).delete()    
+                    else:
+                        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+
+
+
+# class OrderView(BaseCRUDView):
+#     SelectedModel = Order
+#     SelectedSerializer = OrderSerializer
+   
+# def post(self, request):
+#     user_id = request.data.get('user_id')
+#     cart_item_ids = request.data.get('cart_item_ids')
+#     first_name = request.data.get('first_name')
+#     last_name = request.data.get('last_name')
+
+#     if not user_id or not cart_item_ids:
+#         return Response({"error": "user_id and cart_item_ids are required"}, status=status.HTTP_400_BAD_REQUEST)
+
+#     serializer = None  # Initialize serializer to None
+
+#     try:
+#         cart_items = CartItem.objects.filter(id__in=cart_item_ids)
+        
+#         cart_items_by_seller = {}
+#         for cart_item in cart_items:
+#             seller_id = cart_item.productId.seller.id
+#             print({seller_id})
+#             if seller_id not in cart_items_by_seller:
+#                 cart_items_by_seller[seller_id] = []
+#             cart_items_by_seller[seller_id].append(cart_item)
+
+#         with transaction.atomic():
+#             for seller_id, seller_cart_items in cart_items_by_seller.items():
+#                 total_price = sum(cart_item.productId.price * cart_item.quantity for cart_item in seller_cart_items)
+
+#                 order_data = {
+#                     'user': user_id,
+#                     'seller': seller_id,
+#                     'total_price': total_price,
+#                     'first_name': request.data.get('first_name'),
+#                     'last_name': request.data.get('last_name'),
+#                     'country': request.data.get('country'),
+#                     'street_address': request.data.get('street_address'),
+#                     'street_address_2': request.data.get('street_address_2'),
+#                     'phone': request.data.get('phone'),
+#                 }
+
+#                 serializer = OrderSerializer(data=order_data)
+#                 if serializer.is_valid():
+#                     order = serializer.save()
+
+#                     for cart_item in seller_cart_items:
+#                         product = cart_item.productId
+#                         product.stock -= cart_item.quantity
+#                         product.save()
+
+#                         order_item_data = {
+#                             'order': order,
+#                             'product': product,
+#                             'quantity': cart_item.quantity,
+#                             'price': product.price,
+#                         }
+#                         OrderItem.objects.create(**order_item_data)
+#                     CartItem.objects.filter(id__in=[item.id for item in seller_cart_items]).delete()    
+#                 else:
+#                     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+#         return Response(serializer.data, status=status.HTTP_201_CREATED)
+#     except Exception as e:
+#         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

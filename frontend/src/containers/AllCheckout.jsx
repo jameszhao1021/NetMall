@@ -90,7 +90,7 @@ function AllCheckout({ userId, cartItems, setCartItems, delivery, setDelivery })
   // }
   function onSubmit(e){
     e.preventDefault();
-   
+
     const orders = cartItems.map(cartItem => ({
       user: userId,
       cart_item: cartItem.id, // Assuming the server expects cart item ID

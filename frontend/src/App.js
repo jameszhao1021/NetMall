@@ -17,6 +17,7 @@ import Cart from './containers/Cart';
 import { Provider } from 'react-redux';
 import store from './store';
 import AllCheckout from './containers/AllCheckout';
+import SingleCheckout from './containers/SingleCheckout';
 import Layout from './hocs/Layout'
 
 function App() {
@@ -82,6 +83,7 @@ function App() {
             <Route path='/products/:productId' element={<ProductDetail fetchProducts={fetchProducts} products={products} setProducts={setProducts} cartItems={cartItems} setCartItems={setCartItems} />} />
             <Route path='/mynetmall/my-cart' element={<Cart cartItems={cartItems} setCartItems={setCartItems} />} />
             <Route path='/mynetmall/pay' element={<AllCheckout cartItems={cartItems} setCartItems={setCartItems} delivery={delivery} setDelivery={setDelivery} />} />
+            <Route path='/mynetmall/pay/:itemId' element={<SingleCheckout cartItems={cartItems} setCartItems={setCartItems} delivery={delivery} setDelivery={setDelivery} />} />
           </Routes>
         </Layout>
       </Router>

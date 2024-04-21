@@ -94,15 +94,15 @@ function Cart({ userId, cartItems, setCartItems }) {
     }
     setEditedQuantity({ ...editedQuantity, [itemId]: newQuantity });
   };
-  
+
 
   const handleQuantityBlur = (cartItem) => {
     let newQuantity = editedQuantity[cartItem.id];
     // if (newQuantity === undefined || newQuantity === '' || newQuantity === null) {
     //   newQuantity = previousQuantity[cartItem.id];
     // }
-  
-    if (newQuantity !== undefined && newQuantity <= cartItem.stock && newQuantity && newQuantity!==null) {
+
+    if (newQuantity !== undefined && newQuantity <= cartItem.stock && newQuantity && newQuantity !== null) {
       axios.put(`/mynetmall/my-cart/${cartItem.id}`, {
         cartId: cartItem.cartId,
         productId: cartItem.productId,
@@ -147,7 +147,7 @@ function Cart({ userId, cartItems, setCartItems }) {
   //     const previousItemId = parseInt(itemId);
   //     const previousItemQuantity = previousQuantity[previousItemId];
   //     const cartItem = cartItems.find(item => item.id === previousItemId);
-  
+
   //     if (cartItem && previousItemQuantity !== undefined && previousItemQuantity !== '') {
   //       setEditedQuantity(prevEditedQuantity => ({
   //         ...prevEditedQuantity,
@@ -173,6 +173,7 @@ function Cart({ userId, cartItems, setCartItems }) {
               .map(cartItem => (
 
                 <div key={cartItem.id} className='card '>
+                  
                   <p>Seller: {cartItem.seller}</p>
                   <p>Title: {cartItem.title}</p>
                   <p>Quantity:</p>
@@ -189,11 +190,15 @@ function Cart({ userId, cartItems, setCartItems }) {
                     />
                     <button className="btn btn-secondary" onClick={() => handlePlus(cartItem)}>+</button>
                   </div>
-                  <p>stock: {cartItem.stock}</p> 
-                  {editedQuantity[cartItem.id] && editedQuantity[cartItem.id] > cartItem.stock && <span style={{ color: 'red' }}>Only {cartItem.stock} left</span>} 
-                  {(editedQuantity[cartItem.id] === 0 ) && <span style={{ color: 'red' }}>Invalid quantity</span>}
+                  <p>stock: {cartItem.stock}</p>
+                  {editedQuantity[cartItem.id] && editedQuantity[cartItem.id] > cartItem.stock && <span style={{ color: 'red' }}>Only {cartItem.stock} left</span>}
+                  {(editedQuantity[cartItem.id] === 0) && <span style={{ color: 'red' }}>Invalid quantity</span>}
                   <p>Price: ${cartItem.price * cartItem.quantity}</p>
+
                   <div className='row d-flex justify-content-evenly mb-2'>
+                    <Link to={`/mynetmall/pay/${cartItem.id}`} className='col-4'>
+                      <button className='btn btn-info w-100'>Buy it now</button>
+                    </Link>
                     <button className='btn btn-danger col-4' onClick={() => toggleDeleteModal(cartItem.id)}>Delete</button>
 
 
@@ -211,7 +216,7 @@ function Cart({ userId, cartItems, setCartItems }) {
             <p>Quantity: {totalQuantity}</p>
             <p>Total: ${totalPrice}</p>
             <Link to='/mynetmall/pay'>
-            <button className='btn btn-info'>Go to checkout</button>
+              <button className='btn btn-info'>Go to checkout</button>
             </Link>
           </div>
         </div>
