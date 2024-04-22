@@ -53,7 +53,7 @@ function Signup({ signup, isAuthenticated }) {
                         required
                     />
                 </div>
-                <div className='form-group'>
+                <div className='form-group mt-2'>
                     <input
                         className='form-control'
                         type='email'
@@ -64,7 +64,7 @@ function Signup({ signup, isAuthenticated }) {
                         required
                     />
                 </div>
-                <div className='form-group'>
+                <div className='form-group mt-2'>
                     <input
                         className='form-control'
                         type='password'
@@ -76,7 +76,7 @@ function Signup({ signup, isAuthenticated }) {
                         required
                     />
                 </div>
-                <div className='form-group'>
+                <div className='form-group mt-2'>
                     <input
                         className='form-control'
                         type='password'
@@ -88,7 +88,7 @@ function Signup({ signup, isAuthenticated }) {
                         required
                     />
                 </div>
-                <button className='btn btn-primary' type='submit'>Register</button>
+                <button className='btn btn-primary mt-3' type='submit'>Register</button>
             </form>
             <p className='mt-3'>
                 Already have an account? <Link to='/login'>Sign In</Link>

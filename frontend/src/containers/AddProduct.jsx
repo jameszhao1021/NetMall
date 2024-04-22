@@ -69,10 +69,10 @@ function AddProduct({ userId, products, setProducts, fetchProducts, newProduct, 
                         <label htmlFor='id_title'>Title: </label>
                         <input type='text' className='form-control' id='id_title' name='title' onChange={onChange} />
                     </div>
-                    <div className="form-group mb-2">
+                    {/* <div className="form-group mb-2">
                     <label htmlFor='id_image'>Product Image: </label>
                     <input type='file' className='form-control' id='id_image' name='image' onChange={handleImageChange} accept="image/*" />
-                    </div>
+                    </div> */}
                     <div className="form-group">
                         <label>Price: </label>
                         <input type='number' className='form-control' name='price' onChange={onChange} />
