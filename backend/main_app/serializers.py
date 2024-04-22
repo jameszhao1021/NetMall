@@ -13,6 +13,19 @@ class ProductImgSerializer(serializers.ModelSerializer):
         model = ProductImg
         fields = '__all__'
 
+        def validate_product(self, value):
+            # Get the count of existing images for the product
+            existing_images_count = ProductImg.objects.filter(product=value).count()
+
+            # Maximum number of images allowed per product
+            max_images_per_product = 5
+
+            # Check if adding a new image will exceed the limit
+            if existing_images_count >= max_images_per_product:
+                raise serializers.ValidationError(f'The maximum number of images allowed per product is {max_images_per_product}')
+
+            return value
+
 class ProductSerializer(serializers.ModelSerializer):
         product_images = ProductImgSerializer(many=True, read_only=True)  # This will include all associated product images
         seller_name = serializers.CharField(source='seller.name', read_only=True)

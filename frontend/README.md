@@ -1,70 +1,40 @@
-# Getting Started with Create React App
+# NetMall
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+NetMall is a dynamic multi-vendor e-commerce platform where users can effortlessly buy or sell a diverse range of products. With its user-friendly interface and robust features, NetMall offers a seamless shopping experience for buyers while providing a lucrative platform for sellers to showcase and sell their products. 
 
-## Available Scripts
+Whether you're in search of unique items or looking to expand your market reach as a seller, NetMall offers a vibrant marketplace tailored to meet your needs.
 
-In the project directory, you can run:
 
-### `npm start`
+## Screenshot
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+![Screenshot of the NetMall](./src/assets/screenshots/homepage.png)
+The home page
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+![Screenshot of the NetMall](./src/assets/screenshots/productDetail.png)
+The product detail page
 
-### `npm test`
+![Screenshot of the NetMall](./src/assets/screenshots/myStore.png)
+The store page
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+![Screenshot of the NetMall](./src/assets/screenshots/cart.png)
+The cart page
 
-### `npm run build`
+![Screenshot of the NetMall](./src/assets/screenshots/purchaseHistory.png)
+The purchase history page
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Technologies Used
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Django REST Framework, PostgreSql, Bootstrap were used in this app.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Getting Started
 
-### `npm run eject`
+Clone the app from https://github.com/jameszhao1021/NetMall.git.
+1. Sign up for a new account using your email. Click the verification link in the email you receive to verify your email address. After verification, you can log in to your account.
+2. You can see all products on the home page, and click to see details page, where you can add the product to your cart.
+3. Click on the cart in the navigation bar to check out. You need to provide delivery information. Once payment is confirmed, you can see your orders in Purchase History page.
+4. You can create, delete and edit products that you want to sell in your store. You are not able to buy products listed by youself. 
+5. The password reset feature allows you to change your password anytime. You will receive a link in your email address by clicking "Reset Password",  
+  
+## Next Steps
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+I will allow users to upload and edit product images, add a filter bar, and consume payment API in later versions. Furthermore, I will spend more time improving the appearance of each page. 

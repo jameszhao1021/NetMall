@@ -18,8 +18,8 @@ function MyStore({ products, setProducts, fetchProducts, userId, userName }) {
     'Authorization': `Bearer ${token}`
   };
 
-const [showDeleteModal, setShowDeleteModal] = useState(false)
- const [deleteProductId, setDeleteProductId] = useState(null)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [deleteProductId, setDeleteProductId] = useState(null)
 
   function toggleDeleteModal(productId) {
     console.log('Deleting product with ID:', productId);
@@ -28,7 +28,7 @@ const [showDeleteModal, setShowDeleteModal] = useState(false)
   }
 
 
-  
+
   const fetchMyProducts = () => {
     axios.get(`/mynetmall/my-store/${userId}`, { headers, withCredential: true })
       .then(res => {
@@ -86,33 +86,31 @@ const [showDeleteModal, setShowDeleteModal] = useState(false)
       <h1>My Store</h1>
 
       <Link to={`/mynetmall/my-store/add-product`}>
-        <div className='btn btn-info'>
+        <div className='btn btn-info mt-4'>
           Add Product
         </div>
-
       </Link>
 
-      <h1>current user id: {userId}</h1>
-      <h1>current user name: {userName}</h1>
-      <div className='d-flex row'>
+      <div className='d-flex row mt-2'>
         {
           products
             .map(product => (
 
               <div key={product.id} className='card col-md-3'>
-                {/* <p>ID: {product.id}</p> */}
+
                 <p>Title: {product.title}</p>
                 <p>Stock: {`${product.stock <= 10 ? `Only ${product.stock} left` : `${product.stock}`} `}</p>
                 <p>Price: ${product.price}</p>
                 <div className='row d-flex justify-content-evenly mb-2'>
-                  {/* <button className='btn btn-danger col-4' onClick={() => { handleDelete(product.id) }}>Delete</button> */}
-                  <button className='btn btn-danger col-4' onClick={()=>toggleDeleteModal(product.id)}>Delete</button>
-                  <a className='col-4' href={`/mynetmall/my-store/edit-product/${product.id}`}>
-                    <button className='btn btn-primary'>Edit</button>
-                  </a>
-
+                  <div className="col-4">
+                    <a className='w-100' href={`/mynetmall/my-store/edit-product/${product.id}`}>
+                      <button className='btn btn-primary w-100'>Edit</button>
+                    </a>
+                  </div>
+                  <div className="col-4">
+                    <button className='btn btn-danger w-100' onClick={() => toggleDeleteModal(product.id)}>Delete</button>
+                  </div>
                   <ProductDeleteModal showDeleteModal={showDeleteModal} toggleDeleteModal={toggleDeleteModal} handleDelete={handleDelete} deleteProductId={deleteProductId} />
-  
                 </div>
               </div>
 

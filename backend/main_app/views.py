@@ -82,6 +82,14 @@ class ProductView(BaseCRUDView):
     permission_classes = []
     authentication_classes = [] 
     
+class ProductImgView(BaseCRUDView):
+    SelectedModel = ProductImg
+    SelectedSerializer = ProductImgSerializer
+    permission_classes = []
+    authentication_classes = [] 
+
+
+
 
 class MyProductView(BaseCRUDView):
 

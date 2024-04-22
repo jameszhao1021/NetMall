@@ -103,18 +103,17 @@ function ProductDetail({ userId }) {
 
     return (
         <div className='container'>
-            <h1>{addToCartProductId}</h1>
-            <div>Product Detail</div>
+          
+            <h1>Product Detail</h1>
             <div className='d-flex row'>
                 {product && ( // Check if product is not empty
                     <>
-                        <p>Title: {product.title}</p>
+                        <h3>{product.title}</h3>
                         <p>Category: {product.category}</p>
                         <p>Stock: {product.stock}</p>
                         <p>Price: ${product.price}</p>
                         <p>Condition: {product.condition}</p>
-                        <p>Description: {product.description && product.description.split('\n').map((line, index) => <React.Fragment key={index}>{line}<br/></React.Fragment>)}</p> 
-
+                        <p>Description: <br></br>{product.description && product.description.split('\n').map((line, index) => <React.Fragment key={index}>{line}<br/></React.Fragment>)}</p> 
                         <p>Seller Id: {product.seller}</p>
                         <p>Seller Name: {product.seller_name}</p>
                         <input className='col-2' onChange={onChange} type='number' name='quantity' min={1} max={100} defaultValue={1} />
@@ -124,10 +123,10 @@ function ProductDetail({ userId }) {
                         <AddToCartModal showAddToCartModal={showAddToCartModal} toggleAddToCartModal={toggleAddToCartModal} addToCartProductId={addToCartProductId} product={product} newCartItem={newCartItem} fetchProduct={fetchProduct} />
                         {newCartItem.quantity > product.stock && <p style={{color:'red'}}>Please enter a lower number</p>}
                         <Link to={`/mynetmall/store/${product.seller}`}>
-                            <button className='btn btn-info'>Visit the seller's store</button>
+                            <button className='btn btn-info mt-3'>Visit the seller's store</button>
                         </Link>
                         <Link to={'/'}>
-                            <button className='btn btn-secondary'>Return</button>
+                            <button className='btn btn-secondary mt-3'>Return</button>
                         </Link>
                     </>
                 )}

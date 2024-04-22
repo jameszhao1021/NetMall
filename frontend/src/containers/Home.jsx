@@ -19,11 +19,7 @@ function Home({fetchProducts, products}){
     return(
    <div className='container'>
    
-   <div>
-    Home
-   </div>
-    
-   <div className='d-flex flex-wrap'>
+   <div className='d-flex flex-wrap mt-4'>
   {products.map(product => (
     <div key={product.id} className='card col-lg-3 col-md-4 col-12 shadow-sm'>
       <Link to={`/products/${product.id}`} className='text-decoration-none text-dark'>

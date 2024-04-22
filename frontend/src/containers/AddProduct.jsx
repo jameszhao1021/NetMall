@@ -1,12 +1,12 @@
 import axios from 'axios'
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom'
 
 function AddProduct({ userId, products, setProducts, fetchProducts, newProduct, setNewProduct }) {
     const csrfToken = document.cookie.split('; ').find(cookie => cookie.startsWith('csrftoken='))?.split('=')[1];
     axios.defaults.headers.common['X-CSRFToken'] = csrfToken;
-
+    const [imageFile, setImageFile] = useState(null);
     const navigate = useNavigate();
 
     function CreateProduct() {
@@ -17,12 +17,18 @@ function AddProduct({ userId, products, setProducts, fetchProducts, newProduct, 
             'Authorization': `Bearer ${token}`
         };
 
-        const productData = { ...newProduct, seller: userId };
+        // const productData = { ...newProduct, seller: userId };
+        const formData = new FormData();
+        formData.append('image', imageFile);
+        for (const key in newProduct) {
+            formData.append(key, newProduct[key]);
+        }
+        formData.append('seller', userId);
 
-        axios.post('/mynetmall/my-store/add-product', productData, { headers, withCredential: true })
+        axios.post('/mynetmall/my-store/add-product', formData, { headers, withCredential: true })
             .then(res => {
                 fetchProducts(); // Fetch details again to update the list with the new object
-                setProducts([...products, productData])
+                setProducts([...products, newProduct])
                 setNewProduct({
                     title: '',
                     price: '',
@@ -44,6 +50,11 @@ function AddProduct({ userId, products, setProducts, fetchProducts, newProduct, 
         });
     }
 
+    function handleImageChange(e) {
+        // Set the selected image file
+        setImageFile(e.target.files[0]);
+    }
+
     function onSubmit(e) {
         e.preventDefault();
         CreateProduct();
@@ -57,6 +68,10 @@ function AddProduct({ userId, products, setProducts, fetchProducts, newProduct, 
                     <div className="form-group mb-2">
                         <label htmlFor='id_title'>Title: </label>
                         <input type='text' className='form-control' id='id_title' name='title' onChange={onChange} />
+                    </div>
+                    <div className="form-group mb-2">
+                    <label htmlFor='id_image'>Product Image: </label>
+                    <input type='file' className='form-control' id='id_image' name='image' onChange={handleImageChange} accept="image/*" />
                     </div>
                     <div className="form-group">
                         <label>Price: </label>
