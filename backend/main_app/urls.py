@@ -16,4 +16,5 @@ urlpatterns = [
     path('mynetmall/pay', OrderView.as_view(), name='pay'),
     path('mynetmall/single-pay', SingleOrderView.as_view(), name='singlepay'),
     path('mynetmall/purchasehistory/<int:user_id>', OrderView.as_view(), name='myorders'),
+    path('mynetmall/orderitems/<int:user_id>', OrderItemView.as_view(), name='myorderitems'),
 ]

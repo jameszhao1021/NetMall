@@ -113,7 +113,8 @@ function ProductDetail({ userId }) {
                         <p>Stock: {product.stock}</p>
                         <p>Price: ${product.price}</p>
                         <p>Condition: {product.condition}</p>
-                        <p>Description: {product.description}</p>
+                        <p>Description: {product.description && product.description.split('\n').map((line, index) => <React.Fragment key={index}>{line}<br/></React.Fragment>)}</p> 
+
                         <p>Seller Id: {product.seller}</p>
                         <p>Seller Name: {product.seller_name}</p>
                         <input className='col-2' onChange={onChange} type='number' name='quantity' min={1} max={100} defaultValue={1} />

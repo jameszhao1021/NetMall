@@ -39,3 +39,9 @@ class OrderSerializer(serializers.ModelSerializer):
         class Meta:
             model = Order
             fields = '__all__'
+
+class OrderItemSerializer(serializers.ModelSerializer):
+        title = serializers.CharField(source='product.title', read_only=True)
+        class Meta:
+            model = OrderItem
+            fields = '__all__'

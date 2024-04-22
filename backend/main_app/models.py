@@ -26,10 +26,10 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length=255, unique=True)
-    name = models.CharField(max_length=255, unique=True, verbose_name='User Name')
+    name = models.CharField(max_length=20, unique=True, verbose_name='User Name')
     address = models.CharField(max_length=255, blank=True)
     phone = models.CharField(max_length=20, blank=True)
-    store = models.CharField(max_length=255, unique=False, blank=True)
+    store = models.CharField(max_length=20, unique=False, blank=True)
     profile = models.ImageField(upload_to='profile/', blank=True)
     create_at = models.DateTimeField(auto_now_add = True)
     is_active = models.BooleanField(default=True)
@@ -96,6 +96,7 @@ class CartItem(models.Model):
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     order_number = models.CharField(max_length=15, unique=True, blank=True)
+    seller = models.CharField(max_length=20)
     first_name = models.CharField(max_length=20)
     last_name = models.CharField(max_length=20)
     country = models.CharField(max_length=50)

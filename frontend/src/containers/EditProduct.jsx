@@ -54,7 +54,7 @@ function EditProduct({ userId, products, newProduct, setNewProduct, fetchProduct
         axios.put(`/mynetmall/my-store/edit-product/${productId}/`, productData, {headers, withCredential: true})
          .then(res => {
             // fetchProducts();
-            navigate(`/mynetmall/my-store/${userId}`);
+            navigate('/mynetmall/my-store');
          })
          
          .catch(err => {
@@ -122,7 +122,7 @@ function EditProduct({ userId, products, newProduct, setNewProduct, fetchProduct
                                 <textarea className='form-control' id='id_description' name='description' value={newProduct.description} onChange={onChange}></textarea>
                             </div>
                             <input type="submit" className="btn btn-primary" value="Edit Product" />
-                            <Link to={`/mynetmall/my-store/${userId}`}>
+                            <Link to='/mynetmall/my-store'>
                             <button className='btn btn-secondary'>Return</button>
                             </Link>
                         </form>

@@ -89,7 +89,6 @@ class MyProductView(BaseCRUDView):
     SelectedSerializer = ProductSerializer
     permission_classes = [IsAuthenticated]
 
-
     def get(self, request, pk):
         print(f'the user id is: {request.user.id}')
         queryset = self.SelectedModel.objects.filter(seller=pk).order_by('create_at')
@@ -214,7 +213,8 @@ class SingleCheckoutView(APIView):
 class OrderView(BaseCRUDView):
     SelectedModel = Order
     SelectedSerializer = OrderSerializer
-   
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, user_id):
         try:
             queryset = self.SelectedModel.objects.filter(user=user_id)
@@ -235,19 +235,19 @@ class OrderView(BaseCRUDView):
             
             cart_items_by_seller = {}
             for cart_item in cart_items:
-                seller_id = cart_item.productId.seller.name
-                print(f'see the seller id: {seller_id}')
+                seller_id = cart_item.productId.seller.id
                 if seller_id not in cart_items_by_seller:
                     cart_items_by_seller[seller_id] = []
                 cart_items_by_seller[seller_id].append(cart_item)
 
             with transaction.atomic():
                 for seller_id, seller_cart_items in cart_items_by_seller.items():
+                    seller_name = cart_item.productId.seller.name
                     total_price = sum(cart_item.productId.price * cart_item.quantity for cart_item in seller_cart_items)
                   
                     order_data = {
                         'user': user_id,
-                        'seller': seller_id,
+                        'seller': seller_name,
                         'total_price': total_price,
                         'first_name': request.data.get('first_name'),
                         'last_name': request.data.get('last_name'),
@@ -302,12 +302,12 @@ class SingleOrderView(BaseCRUDView):
             
 
             with transaction.atomic():
-                    seller_id = cart_item.productId.seller.id
+                    seller_name = cart_item.productId.seller.name
                     total_price = cart_item.productId.price * cart_item.quantity 
 
                     order_data = {
                         'user': user_id,
-                        'seller': seller_id,
+                        'seller': seller_name,
                         'total_price': total_price,
                         'first_name': request.data.get('first_name'),
                         'last_name': request.data.get('last_name'),
@@ -341,72 +341,15 @@ class SingleOrderView(BaseCRUDView):
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+class OrderItemView(BaseCRUDView):
+    SelectedModel = OrderItem
+    SelectedSerializer = OrderItemSerializer
+    permission_classes = [IsAuthenticated]
 
-
-
-
-# class OrderView(BaseCRUDView):
-#     SelectedModel = Order
-#     SelectedSerializer = OrderSerializer
-   
-# def post(self, request):
-#     user_id = request.data.get('user_id')
-#     cart_item_ids = request.data.get('cart_item_ids')
-#     first_name = request.data.get('first_name')
-#     last_name = request.data.get('last_name')
-
-#     if not user_id or not cart_item_ids:
-#         return Response({"error": "user_id and cart_item_ids are required"}, status=status.HTTP_400_BAD_REQUEST)
-
-#     serializer = None  # Initialize serializer to None
-
-#     try:
-#         cart_items = CartItem.objects.filter(id__in=cart_item_ids)
-        
-#         cart_items_by_seller = {}
-#         for cart_item in cart_items:
-#             seller_id = cart_item.productId.seller.id
-#             print({seller_id})
-#             if seller_id not in cart_items_by_seller:
-#                 cart_items_by_seller[seller_id] = []
-#             cart_items_by_seller[seller_id].append(cart_item)
-
-#         with transaction.atomic():
-#             for seller_id, seller_cart_items in cart_items_by_seller.items():
-#                 total_price = sum(cart_item.productId.price * cart_item.quantity for cart_item in seller_cart_items)
-
-#                 order_data = {
-#                     'user': user_id,
-#                     'seller': seller_id,
-#                     'total_price': total_price,
-#                     'first_name': request.data.get('first_name'),
-#                     'last_name': request.data.get('last_name'),
-#                     'country': request.data.get('country'),
-#                     'street_address': request.data.get('street_address'),
-#                     'street_address_2': request.data.get('street_address_2'),
-#                     'phone': request.data.get('phone'),
-#                 }
-
-#                 serializer = OrderSerializer(data=order_data)
-#                 if serializer.is_valid():
-#                     order = serializer.save()
-
-#                     for cart_item in seller_cart_items:
-#                         product = cart_item.productId
-#                         product.stock -= cart_item.quantity
-#                         product.save()
-
-#                         order_item_data = {
-#                             'order': order,
-#                             'product': product,
-#                             'quantity': cart_item.quantity,
-#                             'price': product.price,
-#                         }
-#                         OrderItem.objects.create(**order_item_data)
-#                     CartItem.objects.filter(id__in=[item.id for item in seller_cart_items]).delete()    
-#                 else:
-#                     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-#         return Response(serializer.data, status=status.HTTP_201_CREATED)
-#     except Exception as e:
-#         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    def get(self, request, user_id):
+        try:
+            queryset = self.SelectedModel.objects.filter(order__user=user_id)
+            serializer = self.SelectedSerializer(queryset, many=True)
+            return Response(serializer.data)
+        except self.SelectedModel.DoesNotExist:
+            return Response({"message": "Products do not exist for this seller"}, status=status.HTTP_404_NOT_FOUND)

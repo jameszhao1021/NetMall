@@ -100,7 +100,7 @@ const [showDeleteModal, setShowDeleteModal] = useState(false)
             .map(product => (
 
               <div key={product.id} className='card col-md-3'>
-                <p>ID: {product.id}</p>
+                {/* <p>ID: {product.id}</p> */}
                 <p>Title: {product.title}</p>
                 <p>Stock: {`${product.stock <= 10 ? `Only ${product.stock} left` : `${product.stock}`} `}</p>
                 <p>Price: ${product.price}</p>
@@ -122,35 +122,7 @@ const [showDeleteModal, setShowDeleteModal] = useState(false)
       </div>
     </div>
   )
-  // return (
-  //   <div className='container'>
-  //     <h1>My Store</h1>
-  //     <Link to='/mynetmall/my-store/add-product'>
-  //       <div className='btn btn-info'>Add Product</div>
-  //     </Link>
-  //     <h1>Current User ID: {userId}</h1>
-  //     <h1>Current User Name: {userName}</h1>
-  //     <div className='d-flex row'>
-  //       {Array.isArray(products) &&
-  //         products
-  //           .filter((product) => product.seller === userId)
-  //           .map((product) => (
-  //             <div key={product.id} className='card col-md-3'>
-  //               <p>ID: {product.id}</p>
-  //               <p>Title: {product.title}</p>
-  //               <p>Stock: {`${product.stock <= 10 ? `Only ${product.stock} left` : `${product.stock}`} `}</p>
-  //               <p>Price: ${product.price}</p>
-  //               <div className='row d-flex justify-content-evenly mb-2'>
-  //                 <button className='btn btn-danger col-4' onClick={() => handleDelete(product.id)}>Delete</button>
-  //                 <a className='col-4' href={`/mynetmall/my-store/edit-product/${product.id}`}>
-  //                   <button className='btn btn-primary'>Edit</button>
-  //                 </a>
-  //               </div>
-  //             </div>
-  //           ))}
-  //     </div>
-  //   </div>
-  // );
+
 }
 
 const mapStateToProps = state => ({

@@ -33,7 +33,7 @@ function AddProduct({ userId, products, setProducts, fetchProducts, newProduct, 
                     condition: '',
                     description: '',
                 }); // Reset form inputs
-                navigate(`/mynetmall/my-store/${userId}`);
+                navigate('/mynetmall/my-store');
             })
             .catch(err => {
                 console.error('Error adding new product:', err);
@@ -98,7 +98,7 @@ function AddProduct({ userId, products, setProducts, fetchProducts, newProduct, 
                         <textarea className='form-control' id='id_description' name='description' onChange={onChange}></textarea>
                     </div>
                     <input type="submit" className="btn btn-primary" value="Add Product"></input>
-                    <Link to={`/mynetmall/my-store/${userId}`}>
+                    <Link to='/mynetmall/my-store'>
                         <button className='btn btn-secondary'>Return</button>
                     </Link>
                 </form>
