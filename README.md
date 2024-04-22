@@ -7,19 +7,19 @@ Whether you're in search of unique items or looking to expand your market reach 
 
 ## Screenshot
 
-![Screenshot of the NetMall](./src/assets/screenshots/homepage.png)
+![Screenshot of the NetMall](./frontend/src/assets/screenshots/homepage.png)
 The home page
 
-![Screenshot of the NetMall](./src/assets/screenshots/productDetail.png)
+![Screenshot of the NetMall](./frontend/src/assets/screenshots/productDetail.png)
 The product detail page
 
-![Screenshot of the NetMall](./src/assets/screenshots/myStore.png)
+![Screenshot of the NetMall](./frontend/src/assets/screenshots/myStore.png)
 The store page
 
-![Screenshot of the NetMall](./src/assets/screenshots/cart.png)
+![Screenshot of the NetMall](./frontend/src/assets/screenshots/cart.png)
 The cart page
 
-![Screenshot of the NetMall](./src/assets/screenshots/purchaseHistory.png)
+![Screenshot of the NetMall](./frontend/src/assets/screenshots/purchaseHistory.png)
 The purchase history page
 
 ## Technologies Used
