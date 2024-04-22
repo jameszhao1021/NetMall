@@ -171,16 +171,13 @@ function Cart({ userId, cartItems, setCartItems }) {
             cartItems
               // .filter(product => product.seller === userId) // Filter products by seller equal to userId
               .map(cartItem => (
-
-                <div key={cartItem.id} className='card '>
-                  
+                <div key={cartItem.id} className='card '> 
                   <p>Seller: {cartItem.seller}</p>
                   <p>Title: {cartItem.title}</p>
                   <p>Quantity:</p>
                   <div className='quantityEditPanel'>
                     <button className="btn btn-secondary" onClick={() => handleMinus(cartItem)}>-</button>
                     <input
-
                       type='text'
                       value={editedQuantity[cartItem.id] !== undefined ? editedQuantity[cartItem.id] : cartItem.quantity}
                       onChange={(e) => handleQuantityChange(cartItem.id, e.target.value)}
@@ -200,28 +197,23 @@ function Cart({ userId, cartItems, setCartItems }) {
                       <button className='btn btn-info w-100'>Buy it now</button>
                     </Link>
                     <button className='btn btn-danger col-4' onClick={() => toggleDeleteModal(cartItem.id)}>Delete</button>
-
-
                     <ItemDeleteModal showDeleteModal={showDeleteModal} toggleDeleteModal={toggleDeleteModal} handleDelete={handleDelete} deleteItemId={deleteItemId} />
-
                   </div>
                 </div>
-
               ))
           }
 
         </div>
-        <div className='col-md-4'>
-          <div className='card'>
+        <div className='col-md-4 '>
+          <div className='card sticky-top'>
             <p>Quantity: {totalQuantity}</p>
-            <p>Total: ${totalPrice}</p>
+            <p><strong>Order total: ${totalPrice}</strong></p>
             <Link to='/mynetmall/pay'>
-              <button className='btn btn-info'>Go to checkout</button>
+              <button className='btn btn-info col-12'>Go to checkout</button>
             </Link>
           </div>
         </div>
       </div>
-
     </div>
   )
 }
@@ -231,9 +223,5 @@ const mapStateToProps = state => ({
   userId: state.auth.user ? state.auth.user.id : null,
   userName: state.auth.user ? state.auth.user.name : null
 })
-
-
-// export default MyStore;
-
 
 export default connect(mapStateToProps, {})(Cart)

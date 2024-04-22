@@ -10,7 +10,6 @@ function EditProduct({ userId, products, newProduct, setNewProduct, fetchProduct
     const csrfToken = document.cookie.split('; ').find(cookie => cookie.startsWith('csrftoken=')).split('=')[1];
     axios.defaults.headers.common['X-CSRFToken'] = csrfToken;
 
-
     console.log('product id:' + productId)
     productId = parseInt(productId);
     const [productLoaded, setProductLoaded] = useState(false);
@@ -126,7 +125,6 @@ function EditProduct({ userId, products, newProduct, setNewProduct, fetchProduct
                             <button className='btn btn-secondary'>Return</button>
                             </Link>
                         </form>
-
                     ))}
             </div>
         </>
@@ -136,10 +134,6 @@ function EditProduct({ userId, products, newProduct, setNewProduct, fetchProduct
 const mapStateToProps = state => ({
     isAuthenticated: state.auth.isAuthenticated,
     userId: state.auth.user ? state.auth.user.id : null,
-
 })
-
-// export default EditProduct;
-
 
 export default connect(mapStateToProps, {})(EditProduct)

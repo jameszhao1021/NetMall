@@ -2,10 +2,7 @@ import axios from 'axios'
 import { useState, useEffect } from 'react'
 import React from 'react';
 import { connect } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
-import ItemDeleteModal from '../components/ItemDeleteModal';
-import Modal from 'react-bootstrap/Modal';
-import Button from 'react-bootstrap/Button';
+import { useNavigate } from 'react-router-dom';
 import CountrySelectForm from '../components/CountrySelectForm';
 
 function AllCheckout({ userId, cartItems, setCartItems, delivery, setDelivery }) {
@@ -25,7 +22,7 @@ function AllCheckout({ userId, cartItems, setCartItems, delivery, setDelivery })
   const [totalQuantity, setTotalQuantity] = useState(null)
   const [totalPrice, setTotalPrice] = useState(null)
   const [editedQuantity, setEditedQuantity] = useState({});
-
+  const [isButtonInvalid, setIsButtonInvalid] = useState(true)
 
   useEffect(() => {
     setTotalQuantity(cartItems.reduce((acc, item) => acc + item.quantity, 0));
@@ -57,37 +54,10 @@ function AllCheckout({ userId, cartItems, setCartItems, delivery, setDelivery })
   }, [userId]); //
 
 
-  // const onSubmit = () => {
-  //   // Iterate through cart items and create order objects
-  //   const orders = cartItems.map(cartItem => ({
-  //     user: userId,
-  //     cart_item: cartItem,
-  //     quantity: cartItem.quantity,
-  //     price: cartItem.price,
-  //     deliveryDetails: delivery // Assuming delivery contains required details
-  //   }));
-
-  //   const deliveryDetails = {
-  //     first_name: delivery.get('first_name'),
-  //     last_name: delivery.get('last_name'),
-  //     country: delivery.get('country'),
-  //     street_address: delivery.get('street_address'),
-  //     street_address_2: delivery.get('street_address_2'),
-  //     phone: delivery.get('phone'),
-  //   };
-
-  //   axios.post('/mynetmall/pay', {orders, deliveryDetails}, { headers, withCredential: true })
-  //   .then(res => {
-        
-  //      console.log('created order')
-  //      console.log(res.data)
-  //       navigate('/');
-  //   })
-  //   .catch(err => {
-  //       console.error('Error adding new product:', err);
-  //   });
-
-  // }
+  function handleSubmit(e){
+    e.preventDefault();
+    setIsButtonInvalid(false)
+  }
   function onSubmit(e){
     e.preventDefault();
 
@@ -119,8 +89,8 @@ function AllCheckout({ userId, cartItems, setCartItems, delivery, setDelivery })
   };
     axios.post('/mynetmall/pay', requestData, { headers, withCredential: true })
       .then(res => {
-        console.log('Order created:', res.data);
         navigate('/');
+        setIsButtonInvalid(false)
       })
       .catch(err => {
         console.error('Error creating order:', err);
@@ -142,34 +112,29 @@ function AllCheckout({ userId, cartItems, setCartItems, delivery, setDelivery })
           {
             cartItems
               .map(cartItem => (
-
                 <div key={cartItem.id} className='card '>
                   <p>Seller: {cartItem.seller}</p>
                   <p>Title: {cartItem.title}</p>
                   <p>Quantity: {cartItem.quantity}</p>
-
                   {editedQuantity[cartItem.id] && editedQuantity[cartItem.id] > cartItem.stock && <span style={{ color: 'red' }}>Only {cartItem.stock} left</span>}
-                  {(editedQuantity[cartItem.id] === 0) && <span style={{ color: 'red' }}>Invalid quantity</span>}
+                  {(editedQuantity[cartItem.id] === 0) && <span style={{ color: 'red' }}>InInvalid quantity</span>}
                   <p>Price: ${cartItem.price * cartItem.quantity}</p>
-
                 </div>
-
               ))
           }
 
         </div>
         <div className='col-md-4'>
-          <div className='card'>
+          <div className='card sticky-top'>
             <p>Quantity: {totalQuantity}</p>
-            <p>Total: ${totalPrice}</p>
-            <button className='btn btn-info' onClick={onSubmit}>Comfirm Payment</button>
+            <p><strong>Order total: ${totalPrice}</strong></p>
+          <button type='submit'className='btn btn-info' onClick={onSubmit} disabled={isButtonInvalid}>Comfirm Payment</button> 
           </div>
         </div>
       </div>
 
- <hr></hr>
-      <h3>Send to</h3>
-      <form className='col-md-8' onSubmit={onSubmit}>
+      <h3 className='mt-3'>Send to</h3>
+      <form className='col-md-8' onSubmit={handleSubmit}>
         <div className="form-group mb-2">
           <label htmlFor='id_first_name'>First Name: </label>
           <input type='text' className='form-control' id='id_first_name' name='first_name' onChange={onChange} required/>
@@ -194,10 +159,8 @@ function AllCheckout({ userId, cartItems, setCartItems, delivery, setDelivery })
         <label htmlFor='id_phone'>Phone: </label>
           <input type='text' className='form-control' id='id_phone' name='phone' onChange={onChange}required />
         </div>
-        <button type="submit" className='btn btn-info' >Comfirm Payment</button>
-       
+        <button type="submit" className='btn btn-info' >Confirm information</button>
       </form>
-
 
     </div>
   )
@@ -208,9 +171,6 @@ const mapStateToProps = state => ({
   userId: state.auth.user ? state.auth.user.id : null,
   userName: state.auth.user ? state.auth.user.name : null
 })
-
-
-// export default MyStore;
 
 
 export default connect(mapStateToProps, {})(AllCheckout)

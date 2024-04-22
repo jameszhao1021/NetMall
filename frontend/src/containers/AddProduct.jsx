@@ -1,9 +1,7 @@
 import axios from 'axios'
-import { useState } from 'react'
 import React from 'react';
 import { connect } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom'
-
 
 function AddProduct({ userId, products, setProducts, fetchProducts, newProduct, setNewProduct }) {
     const csrfToken = document.cookie.split('; ').find(cookie => cookie.startsWith('csrftoken='))?.split('=')[1];
@@ -46,17 +44,13 @@ function AddProduct({ userId, products, setProducts, fetchProducts, newProduct, 
         });
     }
 
-
     function onSubmit(e) {
         e.preventDefault();
         CreateProduct();
-
     }
 
 
     return (
-
-        <>
             <div className='container'>
                 <h1>Add Product</h1>
                 <form onSubmit={onSubmit}>
@@ -103,7 +97,6 @@ function AddProduct({ userId, products, setProducts, fetchProducts, newProduct, 
                     </Link>
                 </form>
             </div>
-        </>
     )
 }
 
@@ -111,9 +104,6 @@ const mapStateToProps = state => ({
     isAuthenticated: state.auth.isAuthenticated,
     userId: state.auth.user ? state.auth.user.id : null
 })
-
-
-// export default AddProduct;
 
 
 export default connect(mapStateToProps, {})(AddProduct)
