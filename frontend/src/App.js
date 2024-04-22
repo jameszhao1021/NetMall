@@ -18,6 +18,7 @@ import { Provider } from 'react-redux';
 import store from './store';
 import AllCheckout from './containers/AllCheckout';
 import SingleCheckout from './containers/SingleCheckout';
+import PurchaseHistory from './containers/PurchaseHistory';
 import Layout from './hocs/Layout'
 
 function App() {
@@ -84,6 +85,7 @@ function App() {
             <Route path='/mynetmall/my-cart' element={<Cart cartItems={cartItems} setCartItems={setCartItems} />} />
             <Route path='/mynetmall/pay' element={<AllCheckout cartItems={cartItems} setCartItems={setCartItems} delivery={delivery} setDelivery={setDelivery} />} />
             <Route path='/mynetmall/pay/:itemId' element={<SingleCheckout cartItems={cartItems} setCartItems={setCartItems} delivery={delivery} setDelivery={setDelivery} />} />
+            <Route path='/mynetmall/purchase-history' element={<PurchaseHistory />} />
           </Routes>
         </Layout>
       </Router>

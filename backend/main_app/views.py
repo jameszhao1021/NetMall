@@ -82,17 +82,6 @@ class ProductView(BaseCRUDView):
     permission_classes = []
     authentication_classes = [] 
     
-    # permission_classes = [IsAuthenticated]  # Ensure user is authenticated
-
-    # def get(self, request):
-    #     # Filter queryset to only include products created by the current user
-    #     print(f'the user id is: {request.user.id}')
-    #     print(f'the user email is: {request.user.email}')
-    #     print(f'Whole Request: {request}')
-    #     print(f'User Information: {request.user}')
-    #     queryset = self.SelectedModel.objects.filter(seller=request.user.id)
-    #     serializer = self.SelectedSerializer(queryset, many=True)
-    #     return Response(serializer.data)
 
 class MyProductView(BaseCRUDView):
 
@@ -226,6 +215,14 @@ class OrderView(BaseCRUDView):
     SelectedModel = Order
     SelectedSerializer = OrderSerializer
    
+    def get(self, request, user_id):
+        try:
+            queryset = self.SelectedModel.objects.filter(user=user_id)
+            serializer = self.SelectedSerializer(queryset, many=True)
+            return Response(serializer.data)
+        except self.SelectedModel.DoesNotExist:
+            return Response({"message": "Products do not exist for this seller"}, status=status.HTTP_404_NOT_FOUND)
+
     def post(self, request):
         user_id = request.data.get('user_id')
         cart_item_ids = request.data.get('cart_item_ids')
@@ -238,8 +235,8 @@ class OrderView(BaseCRUDView):
             
             cart_items_by_seller = {}
             for cart_item in cart_items:
-                seller_id = cart_item.productId.seller.id
-                print({seller_id})
+                seller_id = cart_item.productId.seller.name
+                print(f'see the seller id: {seller_id}')
                 if seller_id not in cart_items_by_seller:
                     cart_items_by_seller[seller_id] = []
                 cart_items_by_seller[seller_id].append(cart_item)
@@ -289,6 +286,9 @@ class OrderView(BaseCRUDView):
 class SingleOrderView(BaseCRUDView):
     SelectedModel = Order
     SelectedSerializer = OrderSerializer
+    permission_classes = [IsAuthenticated]
+
+   
    
     def post(self, request):
         user_id = request.data.get('user_id')
