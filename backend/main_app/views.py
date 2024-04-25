@@ -10,6 +10,11 @@ from rest_framework.decorators import api_view
 from django.views.decorators.csrf import csrf_exempt
 from django.db import transaction
 from django.shortcuts import get_object_or_404
+import boto3
+from django.conf import settings
+import os
+from io import BytesIO
+from django.core.files.base import ContentFile
 
 class BaseCRUDView(APIView):
     SelectedModel = None
@@ -89,7 +94,85 @@ class ProductImgView(BaseCRUDView):
     authentication_classes = [] 
 
 
+class ProductImgView(BaseCRUDView):
+    SelectedModel = ProductImg
+    SelectedSerializer = ProductImgSerializer
+    permission_classes = []
+    authentication_classes = []
 
+    def post(self, request):
+        # Get the image file from the request
+        image_file = request.FILES.get('image')
+        print(f'image_file: {image_file}')
+        # Validate the image file
+        if not image_file:
+            return Response({"error": "No image file provided"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Serialize the product image data
+        serializer = self.SelectedSerializer(data={"image": image_file, "product": request.data.get("product")})
+
+        # Check if the serializer is valid
+        if serializer.is_valid(raise_exception=True):
+            # Save the product image to the server
+            product_img = serializer.save()
+            image_file.seek(0)
+            # Upload the image to AWS S3
+            try:
+                # Read the image file data
+                image_data = image_file.read()
+                print(f'first print: {image_data}')
+                # Create an S3 client
+                s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID, aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
+                
+                # Define the bucket name and object key
+                bucket_name = 'netmall'
+                object_key = 'product_images/' + image_file.name
+
+                # Upload the image file to S3
+                s3.put_object(Bucket=bucket_name, Key=object_key, Body=image_data)
+                print(f'second print: {image_data}')
+                # Construct the image URL
+                image_url = f'https://{bucket_name}.s3.amazonaws.com/{object_key}'
+
+                # Update the product image model with the image URL
+                product_img.image_url = image_url
+                product_img.save()
+
+                # Return a success response
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+            except Exception as e:
+                # Return an error response if uploading to S3 fails
+                return Response({"error": f"Failed to upload image to AWS S3: {e}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        else:
+            # Return an error response if serializer is invalid
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# class GetProductImgView(BaseCRUDView):
+#     SelectedModel = ProductImg
+#     SelectedSerializer = ProductImgSerializer
+#     permission_classes = []
+#     authentication_classes = []
+
+#     def get(self, request, bucket_name, object_key):
+#         try:
+#             # Create an S3 client
+#             s3 = boto3.client('s3')
+
+#             # Retrieve the image object from S3
+#             response = s3.get_object(Bucket=bucket_name, Key=object_key)
+
+#             # Read the image data
+#             image_data = response['Body'].read()
+
+#             # Return the image data as an HTTP response
+#             return HttpResponse(image_data, content_type=response['ContentType'])
+        
+#         except ClientError as e:
+#             # Handle errors (e.g., image not found, permission issues, etc.)
+#             print(e)
+#             return HttpResponse(status=status.HTTP_404_NOT_FOUND)
 
 class MyProductView(BaseCRUDView):
 

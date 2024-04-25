@@ -33,25 +33,12 @@ function MyStore({ products, setProducts, fetchProducts, userId, userName }) {
     axios.get(`/mynetmall/my-store/${userId}`, { headers, withCredential: true })
       .then(res => {
         setProducts(res.data);
-        console.log(res.data)
       })
       .catch(err => {
         console.error('Error fetching data:', err);
       });
   };
 
-
-
-  // useEffect(() => {
-
-  //   try {
-  //     fetchMyProducts();
-  //     setLoading(false);
-  //     console.log(userId)
-  //   } catch (error) {
-  //     console.error('Error fetching products:', error);
-  //   }
-  // }, []);
 
   useEffect(() => {
     if (userId) { // Fetch data only if userId is available

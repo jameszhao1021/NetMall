@@ -13,7 +13,11 @@ import os
 from pathlib import Path
 from datetime import timedelta
 import environ
+from dotenv import load_dotenv
+load_dotenv()
 
+AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
