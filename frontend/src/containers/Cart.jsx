@@ -165,6 +165,8 @@ function Cart({ userId, cartItems, setCartItems }) {
   return (
     <div className='container'>
       <h1>Shopping cart</h1>
+
+      {cartItems.length>0 ?
       <div className='d-flex'>
         <div className='col-md-8'>
           {
@@ -213,6 +215,8 @@ function Cart({ userId, cartItems, setCartItems }) {
           }
 
         </div>
+   
+
         <div className='col-md-4 '>
           <div className='card sticky-top'>
             <div className='card-body'>
@@ -224,7 +228,21 @@ function Cart({ userId, cartItems, setCartItems }) {
             </div>
           </div>
         </div>
+        {/* :
+        <h1>You don't have any items in your cart.</h1> */}
+      
+      
+     
       </div>
+
+      :
+      <div className='container d-flex flex-column align-items-center'>
+      <h2 className='mt-5'>You don't have any items in your cart.</h2>
+      <Link to='/'>
+         <button className='btn btn-info mt-5'>Start Shopping</button>
+      </Link>
+      </div>
+    } 
     </div>
   )
 }
