@@ -18,5 +18,5 @@ urlpatterns = [
     path('mynetmall/purchasehistory/<int:user_id>', OrderView.as_view(), name='myorders'),
     path('mynetmall/orderitems/<int:user_id>', OrderItemView.as_view(), name='myorderitems'),
     path('mynetmall/product-image', ProductImgView.as_view(), name='product_images'),
-   
+    path('mynetmall/product-image/<int:pk>', ProductImgView.as_view(), name='product_images_update'),
 ]

@@ -80,8 +80,8 @@ class ProductImg(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     image = models.ImageField(upload_to='product_images/', null=True, blank=True)
     image_url = models.URLField(null=True, blank=True)
-    # def __str__(self):
-    #     return f"Image for product_id: {self.product_id} @{self.url}"
+    def __str__(self):
+        return f'Image ID: {self.id}'
 
 class Cart(models.Model):
     userId = models.ForeignKey(User, on_delete=models.CASCADE)

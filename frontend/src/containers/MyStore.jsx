@@ -46,7 +46,6 @@ function MyStore({ products, setProducts, fetchProducts, userId, userName }) {
       try {
         fetchMyProducts();
         setLoading(false);
-        products.map(p => (console.log(p.image_urls)))
       } catch (error) {
         console.error('Error fetching products:', error);
       }
@@ -84,7 +83,7 @@ function MyStore({ products, setProducts, fetchProducts, userId, userName }) {
         {
           products
             .map(product => (
-
+       
               <div key={product.id} className='card col-lg-3 col-md-4 col-sm-6'>
                 <div className='card-body'>
                 <div className='col-12 square-container'>
@@ -97,7 +96,8 @@ function MyStore({ products, setProducts, fetchProducts, userId, userName }) {
                 <p>Price: ${product.price}</p>
                 <div className='row d-flex justify-content-evenly mb-2'>
                   <div className="col-4">
-                    <a className='w-100' href={`/mynetmall/my-store/edit-product/${product.id}`}>
+                    {/* <a className='w-100' href={`/mynetmall/my-store/edit-product/${product.id}`}> */}
+                    <a className='w-100' href={`/mynetmall/my-store/edit-product/${product.id}?imageId=${product.image_ids[0]}`}>
                       <button className='btn btn-primary' style={{width:'80px'}}>Edit</button>
                     </a>
                   </div>

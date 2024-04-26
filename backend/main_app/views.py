@@ -130,7 +130,7 @@ class ProductImgView(BaseCRUDView):
 
                 # Upload the image file to S3
                 s3.put_object(Bucket=bucket_name, Key=object_key, Body=image_data)
-                
+
                 # Construct the image URL
                 image_url = f'https://{bucket_name}.s3.amazonaws.com/{object_key}'
 
@@ -148,31 +148,114 @@ class ProductImgView(BaseCRUDView):
         else:
             # Return an error response if serializer is invalid
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-# class GetProductImgView(BaseCRUDView):
-#     SelectedModel = ProductImg
-#     SelectedSerializer = ProductImgSerializer
-#     permission_classes = []
-#     authentication_classes = []
-
-#     def get(self, request, bucket_name, object_key):
-#         try:
-#             # Create an S3 client
-#             s3 = boto3.client('s3')
-
-#             # Retrieve the image object from S3
-#             response = s3.get_object(Bucket=bucket_name, Key=object_key)
-
-#             # Read the image data
-#             image_data = response['Body'].read()
-
-#             # Return the image data as an HTTP response
-#             return HttpResponse(image_data, content_type=response['ContentType'])
         
-#         except ClientError as e:
-#             # Handle errors (e.g., image not found, permission issues, etc.)
-#             print(e)
-#             return HttpResponse(status=status.HTTP_404_NOT_FOUND)
+    # def put(self, request, pk):
+    #     # Get the existing product image object
+    #     try:
+    #         product_img = self.SelectedModel.objects.get(pk=pk)
+    #     except ProductImg.DoesNotExist:
+    #         return Response({"error": "Product image not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    #     # Get the new image file from the request
+    #     new_image_file = request.FILES.get('image')
+    #     if not new_image_file:
+    #         return Response({"error": "No new image file provided"}, status=status.HTTP_400_BAD_REQUEST)
+
+    #     # Update the product image data
+    #     serializer = self.SelectedSerializer(product_img, data={"image": new_image_file}, partial=True)
+
+    #     # Check if the serializer is valid
+    #     if serializer.is_valid(raise_exception=True):
+    #         # Save the updated product image to the server
+    #         updated_product_img = serializer.save()
+    #         new_image_file.seek(0)
+    #         # Handle image upload to AWS S3 (similar to the POST method)
+    #         try:
+    #             # Read the image file data
+    #             image_data = new_image_file.read()
+
+    #             # Create an S3 client
+    #             s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID, aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
+                
+    #             # Define the bucket name and object key
+    #             bucket_name = 'netmall'
+    #             object_key = 'product_images/' + new_image_file.name
+
+    #             # Upload the image file to S3
+    #             s3.put_object(Bucket=bucket_name, Key=object_key, Body=image_data)
+
+    #             # Construct the image URL
+    #             image_url = f'https://{bucket_name}.s3.amazonaws.com/{object_key}'
+
+    #             # Update the product image model with the new image URL
+    #             updated_product_img.image_url = image_url
+    #             updated_product_img.save()
+
+    #             # Return a success response
+    #             return Response(serializer.data, status=status.HTTP_200_OK)
+
+    #         except Exception as e:
+    #             # Return an error response if uploading to S3 fails
+    #             return Response({"error": f"Failed to upload updated image to AWS S3: {e}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    #     else:
+    #         # Return an error response if serializer is invalid
+    #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def put(self, request, pk):
+        # Get the existing product image object
+        try:
+            product_img = self.SelectedModel.objects.get(pk=pk)
+        except ProductImg.DoesNotExist:
+            return Response({"error": "Product image not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        # Get the new image file from the request
+        new_image_file = request.FILES.get('image')
+
+        # Check if a new image file is provided
+        if new_image_file:
+            # Update the product image data
+            serializer = self.SelectedSerializer(product_img, data={"image": new_image_file}, partial=True)
+        else:
+            # If no new image file is provided, proceed with partial update without the image
+            serializer = self.SelectedSerializer(product_img, data=request.data, partial=True)
+
+        # Check if the serializer is valid
+        if serializer.is_valid(raise_exception=True):
+            # Save the updated product image to the server
+            updated_product_img = serializer.save()
+            new_image_file.seek(0)
+            # If a new image file is provided, handle image upload to AWS S3
+            if new_image_file:
+                try:
+                    # Read the image file data
+                    image_data = new_image_file.read()
+
+                    # Create an S3 client
+                    s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID, aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
+                    
+                    # Define the bucket name and object key
+                    bucket_name = 'netmall'
+                    object_key = 'product_images/' + new_image_file.name
+
+                    # Upload the image file to S3
+                    s3.put_object(Bucket=bucket_name, Key=object_key, Body=image_data)
+
+                    # Construct the image URL
+                    image_url = f'https://{bucket_name}.s3.amazonaws.com/{object_key}'
+
+                    # Update the product image model with the new image URL
+                    updated_product_img.image_url = image_url
+                    updated_product_img.save()
+
+                except Exception as e:
+                    # Return an error response if uploading to S3 fails
+                    return Response({"error": f"Failed to upload updated image to AWS S3: {e}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+            # Return a success response
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            # Return an error response if serializer is invalid
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class MyProductView(BaseCRUDView):
 

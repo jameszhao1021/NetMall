@@ -30,7 +30,8 @@ class ProductSerializer(serializers.ModelSerializer):
         product_images = ProductImgSerializer(many=True, read_only=True)  # This will include all associated product images
         seller_name = serializers.CharField(source='seller.name', read_only=True)
         seller_id = serializers.CharField(source='seller.id', read_only=True)
-        image_urls = serializers.SerializerMethodField()
+        image_urls = serializers.SerializerMethodField(source='get_image_urls')
+        image_ids = serializers.SerializerMethodField(source='get_image_ids')
 
         class Meta:
             model = Product
@@ -40,6 +41,11 @@ class ProductSerializer(serializers.ModelSerializer):
             # Retrieve related ProductImg objects and extract image URLs
             product_imgs = obj.productimg_set.all()
             return [product_img.image_url for product_img in product_imgs]
+        
+        def get_image_ids(self, obj):
+            # Retrieve related ProductImg objects and extract image ids
+            product_imgs = obj.productimg_set.all()
+            return [product_img.id for product_img in product_imgs]
 
 class CartSerializer(serializers.ModelSerializer):
         class Meta:

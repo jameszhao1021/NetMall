@@ -125,7 +125,6 @@ function AddProduct({ userId, fetchProducts }) {
                 // If both requests are successful, navigate
                 if (imageResponse.status === 201) {
                     fetchProducts();
-                    console.log('image successful')
                     setNewProduct({
                         title: '',
                         price: '',
