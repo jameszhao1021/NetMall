@@ -120,7 +120,7 @@ class ProductImgView(BaseCRUDView):
             try:
                 # Read the image file data
                 image_data = image_file.read()
-                print(f'first print: {image_data}')
+
                 # Create an S3 client
                 s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID, aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
                 
@@ -130,7 +130,7 @@ class ProductImgView(BaseCRUDView):
 
                 # Upload the image file to S3
                 s3.put_object(Bucket=bucket_name, Key=object_key, Body=image_data)
-                print(f'second print: {image_data}')
+                
                 # Construct the image URL
                 image_url = f'https://{bucket_name}.s3.amazonaws.com/{object_key}'
 

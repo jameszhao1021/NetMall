@@ -45,7 +45,7 @@ function SingleCheckout({ userId, delivery, setDelivery }) {
     }
   }, [userId]); //
 
-  function handleSubmit(e){
+  function handleSubmit(e) {
     e.preventDefault();
     setIsButtonInvalid(false)
   }
@@ -82,27 +82,37 @@ function SingleCheckout({ userId, delivery, setDelivery }) {
 
   return (
     <div className='container'>
-      <h1>Checkout All</h1>
+      <h1>Checkout</h1>
       {/* Render cart item details */}
       {cartItem && (
-        <div className='d-flex'>
+        <div className='d-flex gap-3 '>
           <div className='col-md-8'>
             <div key={cartItem.id} className='card '>
-              <p>Seller: {cartItem.seller}</p>
-              <p>Title: {cartItem.title}</p>
-              <p>Quantity: {cartItem.quantity}</p>
-              <p>Price: {cartItem.price * cartItem.quantity}</p>
-              {/* Render other cart item details */}
+              <div className='card-body'>
+                <p>Seller: {cartItem.seller}</p>
+                <div className='d-flex gap-3 align-items-center'>
+                  <div className='col-2 square-container'>
+                    {cartItem.image_urls[0] &&
+                      <img className='square-image-order' src={cartItem.image_urls[0]} alt={cartItem.title} style={{ width: '100%' }} />
+                    }
+                  </div>
+                  <p className='col-4'>{cartItem.title}</p>
+                  <p>Quantity: {cartItem.quantity}</p>
+                  <p>Price: {cartItem.price * cartItem.quantity}</p>
+                </div>
+              </div>
             </div>
           </div>
           {/* Render other elements */}
 
           <div className='col-md-4'>
             <div className='card sticky-top'>
+              <div className='card-body'>
               <p>Quantity: {cartItem.quantity}</p>
               <p><strong>Order total: ${cartItem.price * cartItem.quantity}</strong></p>
-              <button className='btn btn-info' onClick={onSubmit} disabled={isButtonInvalid}>Confirm and pay</button>
+              <button className='btn btn-info col-12' onClick={onSubmit} disabled={isButtonInvalid}>Confirm and pay</button>
             </div>
+              </div>
           </div>
 
         </div>
@@ -111,7 +121,7 @@ function SingleCheckout({ userId, delivery, setDelivery }) {
       {/* Render form */}
       {cartItem && (
         <div>
-        
+
           <h3 className='mt-3'>Send to</h3>
           <form className='col-md-8' onSubmit={handleSubmit}>
             <div className="form-group mb-2">

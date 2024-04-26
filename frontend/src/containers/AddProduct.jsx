@@ -162,7 +162,7 @@ function AddProduct({ userId, fetchProducts }) {
                     </div>
                     <div className="form-group">
                         <label>Price: </label>
-                        <input type='number' className='form-control' name='price' onChange={onChange} />
+                        <input type='number' step='0.01' className='form-control' name='price' onChange={onChange} />
                     </div>
                     <div className="form-group mb-2">
                         <label>Stock: </label>
@@ -191,7 +191,7 @@ function AddProduct({ userId, fetchProducts }) {
                     </div>
                     <div className="form-group mb-2">
                         <label htmlFor='id_description'>Description: </label>
-                        <textarea className='form-control' id='id_description' name='description' onChange={onChange}></textarea>
+                        <textarea className='form-control' id='id_description' name='description' rows='15' onChange={onChange}></textarea>
                     </div>
                     <input type="submit" className="btn btn-primary" value="Add Product"></input>
                     <Link to='/mynetmall/my-store'>

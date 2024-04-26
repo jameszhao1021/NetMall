@@ -30,9 +30,16 @@ class ProductSerializer(serializers.ModelSerializer):
         product_images = ProductImgSerializer(many=True, read_only=True)  # This will include all associated product images
         seller_name = serializers.CharField(source='seller.name', read_only=True)
         seller_id = serializers.CharField(source='seller.id', read_only=True)
+        image_urls = serializers.SerializerMethodField()
+
         class Meta:
             model = Product
             fields = '__all__'
+
+        def get_image_urls(self, obj):
+            # Retrieve related ProductImg objects and extract image URLs
+            product_imgs = obj.productimg_set.all()
+            return [product_img.image_url for product_img in product_imgs]
 
 class CartSerializer(serializers.ModelSerializer):
         class Meta:
@@ -44,9 +51,21 @@ class CartItemSerializer(serializers.ModelSerializer):
         price = serializers.IntegerField(source='productId.price', read_only=True)
         stock = serializers.IntegerField(source='productId.stock', read_only=True)
         seller = serializers.CharField(source='productId.seller.name', read_only=True)
+        image_urls = serializers.SerializerMethodField()
+
         class Meta:
             model = CartItem
             fields = '__all__'
+
+        def get_image_urls(self, obj):
+            # Retrieve the product associated with the order item
+            product_imgs = obj.productId.productimg_set.all()
+
+            # If product exists and has image URLs, return them
+            if product_imgs:
+                return [product_img.image_url for product_img in product_imgs]
+            else:
+                return None
 
 class OrderSerializer(serializers.ModelSerializer):
         class Meta:
@@ -54,7 +73,20 @@ class OrderSerializer(serializers.ModelSerializer):
             fields = '__all__'
 
 class OrderItemSerializer(serializers.ModelSerializer):
+   
         title = serializers.CharField(source='product.title', read_only=True)
+        image_urls = serializers.SerializerMethodField()
+
         class Meta:
             model = OrderItem
             fields = '__all__'
+
+        def get_image_urls(self, obj):
+            # Retrieve the product associated with the order item
+            product_imgs = obj.product.productimg_set.all()
+
+            # If product exists and has image URLs, return them
+            if product_imgs:
+                return [product_img.image_url for product_img in product_imgs]
+            else:
+                return None

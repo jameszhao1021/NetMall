@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux'
+import '../index.css'
 
 function PurchaseHistory({ userId }) {
     const csrfToken = document.cookie.split('; ').find(cookie => cookie.startsWith('csrftoken='))?.split('=')[1];
@@ -63,20 +64,29 @@ function PurchaseHistory({ userId }) {
             {orders && orders.map(order => (
                 <div key={order.id} className='card  col-12 shadow-sm mb-3'>
                     <div className='card-body'>
-                        <h5 className='card-title'>Order Id: {order.order_number}</h5>
+                        <h5 className='card-title'>Order ID: {order.order_number}</h5>
                         <p className='card-text'>Seller: {order.seller}</p>
                         {/* <p className='card-text'>Total Price: ${order.total_price}</p> */}
-                        
+
                         {
                             orderItems && orderItems.filter(orderItem => (
                                 orderItem.order === order.id
                             )).map(item => (
-                                
+
                                 <div key={item.id}>
                                     <hr></hr>
-                                    <p>{item.title}</p>
-                                    <p>Quantity: {item.quantity}</p>
-                                    <p>Price: ${(item.price * item.quantity).toFixed(2)}</p>
+                                    <div className='d-flex align-items-center gap-3'>
+                                    <div className='col-2 square-container'>
+                                        {item.image_urls[0] &&
+                                            <img className='square-image-order' src={item.image_urls[0]} alt={item.title}  style={{width:'100%'}}/>
+                                        }
+                                    </div>
+                                    <div className='col-10'>
+                                        <p>{item.title}</p>
+                                        <p>Quantity: {item.quantity}</p>
+                                        <p>Price: ${(item.price * item.quantity).toFixed(2)}</p>
+                                    </div>
+                                    </div>
                                 </div>
                             ))
                         }

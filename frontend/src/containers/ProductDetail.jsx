@@ -70,16 +70,16 @@ function ProductDetail({ userId }) {
         if (!userId) {
             toggleLoginAlarmModal()
             console.log('you need to login!')
-        } else if(product.seller_id === String(userId)){
+        } else if (product.seller_id === String(userId)) {
             toggleSelfbuyingAlarmModal()
         }
-        
-        else if(newCartItem.quantity > product.stock){
-           return
+
+        else if (newCartItem.quantity > product.stock) {
+            return
         }
-        
+
         else {
-            
+
             axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
             axios.defaults.xsrfCookieName = "csrftoken";
             const token = localStorage.getItem('access');
@@ -103,25 +103,35 @@ function ProductDetail({ userId }) {
 
     return (
         <div className='container'>
-          
-            <h1>Product Detail</h1>
+
             <div className='d-flex row'>
                 {product && ( // Check if product is not empty
                     <>
+                        <div className='d-flex align-items-center gap-3'>
+                            <div className='col-5'>
+                        {product.image_urls[0] &&
+                            <img src={product.image_urls[0]} alt={product.title} style={{ width:'100%', maxHeight: '500px', margin: '5px' }} />
+                        }
+                        </div>
+                        <div className='col-7'>
                         <h3>{product.title}</h3>
                         <p>Category: {product.category}</p>
                         <p>Stock: {product.stock}</p>
                         <p>Price: ${product.price}</p>
                         <p>Condition: {product.condition}</p>
-                        <p>Description: <br></br>{product.description && product.description.split('\n').map((line, index) => <React.Fragment key={index}>{line}<br/></React.Fragment>)}</p> 
-                        <p>Seller Id: {product.seller}</p>
-                        <p>Seller Name: {product.seller_name}</p>
-                        <input className='col-2' onChange={onChange} type='number' name='quantity' min={1} max={100} defaultValue={1} />
+                        <label className='me-2' htmlFor='id_quantity'>Quantity:</label>
+                        <input className='me-3' onChange={onChange} type='number' name='quantity' id='id_quantity' min={1} max={100} defaultValue={1} style={{width:'50px'}}/>
                         <button className='btn btn-primary col-2 mb-2' onClick={AddToCart}>Add to cart</button>
-                        <LoginAlarmModal showLoginAlarmModal={showLoginAlarmModal} toggleLoginAlarmModal={toggleLoginAlarmModal}/>
-                        <SelfbuyingAlarmModal showSelfbuyingAlarmModal={showSelfbuyingAlarmModal} toggleSelfbuyingAlarmModal={toggleSelfbuyingAlarmModal}/>
+                        <LoginAlarmModal showLoginAlarmModal={showLoginAlarmModal} toggleLoginAlarmModal={toggleLoginAlarmModal} />
+                        <SelfbuyingAlarmModal showSelfbuyingAlarmModal={showSelfbuyingAlarmModal} toggleSelfbuyingAlarmModal={toggleSelfbuyingAlarmModal} />
                         <AddToCartModal showAddToCartModal={showAddToCartModal} toggleAddToCartModal={toggleAddToCartModal} addToCartProductId={addToCartProductId} product={product} newCartItem={newCartItem} fetchProduct={fetchProduct} />
-                        {newCartItem.quantity > product.stock && <p style={{color:'red'}}>Please enter a lower number</p>}
+                        {newCartItem.quantity > product.stock && <p style={{ color: 'red' }}>Please enter a lower number</p>}
+                        </div>
+                        </div>
+                        <p>Description: <br></br>{product.description && product.description.split('\n').map((line, index) => <React.Fragment key={index}>{line}<br /></React.Fragment>)}</p>
+                     
+                        <p className='mt-4'><strong>Seller: {product.seller_name}</strong></p>
+
                         <Link to={`/mynetmall/store/${product.seller}`}>
                             <button className='btn btn-info mt-3'>Visit the seller's store</button>
                         </Link>

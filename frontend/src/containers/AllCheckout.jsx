@@ -106,19 +106,26 @@ function AllCheckout({ userId, cartItems, setCartItems, delivery, setDelivery })
 
   return (
     <div className='container'>
-      <h1>Checkout All</h1>
+      <h1>Checkout</h1>
       <div className='d-flex'>
         <div className='col-md-8'>
           {
             cartItems
               .map(cartItem => (
                 <div key={cartItem.id} className='card '>
-                  <p>Seller: {cartItem.seller}</p>
-                  <p>Title: {cartItem.title}</p>
+                <div className='card-body'>
+                <p>Seller: {cartItem.seller}</p>
+                <div className='d-flex gap-3 align-items-center'>
+                  <div className='col-2 square-container'>
+                    {cartItem.image_urls[0] &&
+                      <img className='square-image-order' src={cartItem.image_urls[0]} alt={cartItem.title} style={{ width: '100%' }} />
+                    }
+                  </div>
+                  <p className='col-4'>{cartItem.title}</p>
                   <p>Quantity: {cartItem.quantity}</p>
-                  {editedQuantity[cartItem.id] && editedQuantity[cartItem.id] > cartItem.stock && <span style={{ color: 'red' }}>Only {cartItem.stock} left</span>}
-                  {(editedQuantity[cartItem.id] === 0) && <span style={{ color: 'red' }}>InInvalid quantity</span>}
-                  <p>Price: ${cartItem.price * cartItem.quantity}</p>
+                  <p>Price: {cartItem.price * cartItem.quantity}</p>
+                </div>
+              </div>
                 </div>
               ))
           }
@@ -126,9 +133,11 @@ function AllCheckout({ userId, cartItems, setCartItems, delivery, setDelivery })
         </div>
         <div className='col-md-4'>
           <div className='card sticky-top'>
+            <div className='card-body'>
             <p>Quantity: {totalQuantity}</p>
             <p><strong>Order total: ${totalPrice}</strong></p>
-          <button type='submit'className='btn btn-info' onClick={onSubmit} disabled={isButtonInvalid}>Comfirm Payment</button> 
+          <button type='submit'className='btn btn-info col-12' onClick={onSubmit} disabled={isButtonInvalid}>Comfirm Payment</button> 
+          </div>
           </div>
         </div>
       </div>

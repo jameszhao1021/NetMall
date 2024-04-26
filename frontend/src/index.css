@@ -11,3 +11,30 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.square-container {
+
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;  /* Sets height equal to the width */
+  overflow: hidden;
+  background-Color: rgb(237, 239, 241);
+  
+}
+
+.square-image {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+}
+
+.square-image-order {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%; /* Ensure image fills the container */
+  height: 100%; /* Ensure image fills the container */
+  object-fit: cover; /* Ensures the image covers the container */
+}
