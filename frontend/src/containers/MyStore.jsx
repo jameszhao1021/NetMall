@@ -22,11 +22,9 @@ function MyStore({ products, setProducts, fetchProducts, userId, userName }) {
   const [deleteProductId, setDeleteProductId] = useState(null)
 
   function toggleDeleteModal(productId) {
-    console.log('Deleting product with ID:', productId);
     setDeleteProductId(productId);
     setShowDeleteModal(prev => !prev);
   }
-
 
 
   const fetchMyProducts = () => {
@@ -96,7 +94,6 @@ function MyStore({ products, setProducts, fetchProducts, userId, userName }) {
                 <p>Price: ${product.price}</p>
                 <div className='row d-flex justify-content-evenly mb-2'>
                   <div className="col-4">
-                    {/* <a className='w-100' href={`/mynetmall/my-store/edit-product/${product.id}`}> */}
                     <a className='w-100' href={`/mynetmall/my-store/edit-product/${product.id}?imageId=${product.image_ids[0]}`}>
                       <button className='btn btn-primary' style={{width:'80px'}}>Edit</button>
                     </a>

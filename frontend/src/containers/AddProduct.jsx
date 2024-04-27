@@ -124,7 +124,6 @@ function AddProduct({ userId, fetchProducts }) {
              
                 // If both requests are successful, navigate
                 if (imageResponse.status === 201) {
-                    fetchProducts();
                     setNewProduct({
                         title: '',
                         price: '',
@@ -192,7 +191,7 @@ function AddProduct({ userId, fetchProducts }) {
                         <label htmlFor='id_description'>Description: </label>
                         <textarea className='form-control' id='id_description' name='description' rows='15' onChange={onChange}></textarea>
                     </div>
-                    <input type="submit" className="btn btn-primary" value="Add Product"></input>
+                    <input type="submit" className="btn btn-primary me-3" value="Add Product"></input>
                     <Link to='/mynetmall/my-store'>
                         <button className='btn btn-secondary'>Return</button>
                     </Link>

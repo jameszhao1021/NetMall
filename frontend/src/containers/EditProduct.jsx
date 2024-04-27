@@ -132,7 +132,7 @@ function EditProduct({ userId, products, newProduct, setNewProduct, fetchProduct
                                 <label htmlFor='id_description'>Description: </label>
                                 <textarea className='form-control' id='id_description' name='description' rows='15' value={newProduct.description} onChange={onChange}></textarea>
                             </div>
-                            <input type="submit" className="btn btn-primary" value="Edit Product" />
+                            <input type="submit" className="btn btn-primary me-3" value="Edit Product" />
                             <Link to='/mynetmall/my-store'>
                             <button className='btn btn-secondary'>Return</button>
                             </Link>

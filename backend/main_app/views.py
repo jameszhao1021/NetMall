@@ -264,7 +264,6 @@ class MyProductView(BaseCRUDView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, pk):
-        print(f'the user id is: {request.user.id}')
         queryset = self.SelectedModel.objects.filter(seller=pk).order_by('create_at')
         serializer = self.SelectedSerializer(queryset, many=True)
         return Response(serializer.data)
@@ -287,6 +286,16 @@ class SelectedProductView(BaseCRUDView):
             # Return 404 if the product does not exist
             return Response({"message": "Product does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
+class ProductByCategoryView(BaseCRUDView):
+    SelectedModel = Product
+    SelectedSerializer = ProductSerializer
+    permission_classes = []
+    authentication_classes = []
+
+    def get(self,request,category):
+        queryset = self.SelectedModel.objects.filter(category=category)
+        serializer = self.SelectedSerializer(queryset, many=True)
+        return Response(serializer.data)
 
 class SellerStoreView(BaseCRUDView):
     SelectedModel = Product  # Corrected attribute name

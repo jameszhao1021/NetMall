@@ -28,8 +28,6 @@ function CountrySelectForm({onChange}) {
   }, []);
 
   function handleCountryChange(selectedOption) {
-    console.log('Selected option:', selectedOption);
-
     setSelectedCountry(selectedOption);
     onChange({ target: { name: 'country', value: selectedOption.value } });
   }

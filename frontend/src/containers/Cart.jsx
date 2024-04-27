@@ -32,7 +32,6 @@ function Cart({ userId, cartItems, setCartItems }) {
 
 
   function toggleDeleteModal(itemId) {
-    console.log('Deleting product with ID:', itemId);
     setDeleteItemId(itemId);
     setShowDeleteModal(prev => !prev);
   }
@@ -43,7 +42,6 @@ function Cart({ userId, cartItems, setCartItems }) {
     axios.get(`/mynetmall/my-cart/${userId}`, { headers, withCredential: true })
       .then(res => {
         setCartItems(res.data);
-        console.log(res.data)
       })
       .catch(err => {
         console.error('Error fetching data:', err);
@@ -73,10 +71,10 @@ function Cart({ userId, cartItems, setCartItems }) {
       });
   };
 
-  const handleInputFocus = (itemId) => {
-    // Store the previous valid quantity when the input field is focused
-    setPreviousQuantity({ ...previousQuantity, [itemId]: editedQuantity[itemId] });
-  };
+  // const handleInputFocus = (itemId) => {
+  //   // Store the previous valid quantity when the input field is focused
+  //   setPreviousQuantity({ ...previousQuantity, [itemId]: editedQuantity[itemId] });
+  // };
 
   const handleQuantityChange = (itemId, quantity) => {
     let newQuantity;

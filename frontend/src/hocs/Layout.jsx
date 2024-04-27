@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import NavBar from '../components/NavBar'
+import Footer from '../components/Footer'
 import {connect} from 'react-redux';
 import { checkAuthenticated, load_user} from '../actions/auth'
 
@@ -12,9 +13,10 @@ function Layout(props) {
 
 
     return (
-        <div>
+        <div className="layout">
             <NavBar />
-            {props.children}
+            <div className="content">{props.children}</div>
+            <Footer />
         </div>
     )
 }

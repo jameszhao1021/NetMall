@@ -1,16 +1,19 @@
 import axios from 'axios'
 import { useState, useEffect } from 'react'
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import CategoryBar from '../components/CategoryBar';
 
-function Home({ fetchProducts, products }) {
+function Category({ fetchProductsByCategory, products }) {
   const csrfToken = document.cookie.split('; ').find(cookie => cookie.startsWith('csrftoken='))?.split('=')[1];
   axios.defaults.headers.common['X-CSRFToken'] = csrfToken;
 
+  let {selectedCategory} = useParams()
+
   useEffect(() => {
-    fetchProducts();
-  }, []);
+    fetchProductsByCategory({selectedCategory} );
+
+  }, [selectedCategory]);
 
 
 
@@ -19,6 +22,7 @@ function Home({ fetchProducts, products }) {
   return (
     <div className='container'>
       <CategoryBar />
+      <h1>{selectedCategory}</h1>
       <div className='d-flex flex-wrap mt-4'>
         {products.map(product => (
           <div key={product.id} className='card col-lg-3 col-md-4 col-sm-6 shadow-sm'>
@@ -37,9 +41,9 @@ function Home({ fetchProducts, products }) {
           </div>
         ))}
       </div>
-
+ 
     </div>
   )
 }
 
-export default Home
+export default Category

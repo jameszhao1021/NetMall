@@ -19,10 +19,10 @@ import store from './store';
 import AllCheckout from './containers/AllCheckout';
 import SingleCheckout from './containers/SingleCheckout';
 import PurchaseHistory from './containers/PurchaseHistory';
+import Category from './containers/Category';
 import Layout from './hocs/Layout'
 
 function App() {
-  // const csrfToken = document.cookie.split('; ').find(cookie => cookie.startsWith('csrftoken=')).split('=')[1];
   const csrfToken = document.cookie.split('; ').find(cookie => cookie.startsWith('csrftoken='))?.split('=')[1];
   axios.defaults.headers.common['X-CSRFToken'] = csrfToken;
   axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
@@ -31,6 +31,7 @@ function App() {
   const headers = {
     'Authorization': `Bearer ${token}`
   };
+  
 
   const [products, setProducts] = useState([]);
   const [editProduct, setEditProduct] = useState(null);
@@ -66,12 +67,23 @@ function App() {
       });
   };
 
+  const fetchProductsByCategory = (productCategory) => {
+    axios.get(`/mynetmall/${productCategory['selectedCategory']}`, { headers, withCredential: true })
+      .then(res => {
+        setProducts(res.data);
+      })
+      .catch(err => {
+        console.error('Error fetching data:', err);
+      });
+  };
+
   return (
     <Provider store={store}>
       <Router>
         <Layout>
           <Routes>
             <Route path='/' element={<Home fetchProducts={fetchProducts} products={products} />} />
+            <Route path='/:selectedCategory' element={<Category fetchProductsByCategory={fetchProductsByCategory} products={products} />} />
             <Route path='/login' element={<Login />} />
             <Route path='/signup' element={<Signup />} />
             <Route path='/reset-password' element={<ResetPassword />} />

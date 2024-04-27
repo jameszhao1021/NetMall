@@ -23,7 +23,6 @@ function ProductDetail({ userId }) {
     const [showAddToCartModal, setShowAddToCartModal] = useState(false);
 
     function toggleAddToCartModal(productId) {
-        console.log('Add to cart with ID:', productId);
         setShowAddToCartModal(prev => !prev);
     }
 
@@ -54,7 +53,6 @@ function ProductDetail({ userId }) {
 
         axios.get(`/products/${productId}/`, { headers, withCredential: true })
             .then(res => {
-                console.log("Received product data:", res.data);
                 setProduct(res.data);
             })
             .catch(err => {
@@ -69,7 +67,6 @@ function ProductDetail({ userId }) {
     function AddToCart() {
         if (!userId) {
             toggleLoginAlarmModal()
-            console.log('you need to login!')
         } else if (product.seller_id === String(userId)) {
             toggleSelfbuyingAlarmModal()
         }
@@ -91,7 +88,6 @@ function ProductDetail({ userId }) {
             axios.post(`/mynetmall/my-cart/${userId}`, newCartItem, { headers, withCredential: true })
                 .then(res => {
                     fetchProduct(); // Fetch details again to update the list with the new object
-                    console.log('succesfully added to cart')
                     toggleAddToCartModal(addToCartProductId)
                 })
                 .catch(err => {
