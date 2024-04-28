@@ -1,0 +1,49 @@
+.searchBar, .searchBarInit{
+    margin-right:5px;
+}
+.searchBarInit, .searchButtonInit {
+    height: 30px;
+  }
+  .searchButtonInit{
+    background-color: rgb(0, 123, 255);
+    color:#fff;
+    border-radius: 5px;
+    transition: all 0.1s ease-in-out;
+  }
+  .searchButtonInit:hover{
+    background-color: rgb(16, 88, 165);
+  }
+.searchBar, .searchButton {
+    height: 100%;
+  }
+
+.searchBar{
+    min-width: 150px;
+}
+
+@media only screen and (max-width: 1200px) {
+    .searchBar{
+        width:150px;
+    }
+  }
+  
+
+
+  @media only screen and (max-width: 420px) {
+    .collapsePart{
+        display: flex;
+        flex-direction: column;
+    }
+    .searchBar, .searchButton {
+        margin-top: 5px;
+        height: 38px;
+      }
+    .searchBar{
+        width:100%;
+      }
+  }
+  
+
+
+
+  

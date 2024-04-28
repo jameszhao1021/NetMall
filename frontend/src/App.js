@@ -32,7 +32,6 @@ function App() {
     'Authorization': `Bearer ${token}`
   };
   
-
   const [products, setProducts] = useState([]);
   const [editProduct, setEditProduct] = useState(null);
   const [newProduct, setNewProduct] = useState({
@@ -53,9 +52,9 @@ function App() {
     phone:'',
   })
 
-
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState(null);
   const [cartItems, setCartItems] = useState([]);
-  const [editCartItems, setEditCartItems] = useState(null);
 
   const fetchProducts = () => {
     axios.get('/mynetmall/my-store', { headers, withCredential: true })
@@ -76,14 +75,17 @@ function App() {
         console.error('Error fetching data:', err);
       });
   };
+  const handleSearchQueryChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
 
   return (
     <Provider store={store}>
       <Router>
         <Layout>
           <Routes>
-            <Route path='/' element={<Home fetchProducts={fetchProducts} products={products} />} />
-            <Route path='/:selectedCategory' element={<Category fetchProductsByCategory={fetchProductsByCategory} products={products} />} />
+            <Route path='/' element={<Home fetchProducts={fetchProducts} products={products} searchQuery={searchQuery} setSearchQuery={setSearchQuery} searchResults={searchResults} setSearchResults={setSearchResults} handleSearchQueryChange={handleSearchQueryChange}/>} />
+            <Route path='/:selectedCategory' element={<Category fetchProductsByCategory={fetchProductsByCategory} products={products} searchQuery={searchQuery} setSearchQuery={setSearchQuery} searchResults={searchResults} setSearchResults={setSearchResults} handleSearchQueryChange={handleSearchQueryChange}/>} />
             <Route path='/login' element={<Login />} />
             <Route path='/signup' element={<Signup />} />
             <Route path='/reset-password' element={<ResetPassword />} />

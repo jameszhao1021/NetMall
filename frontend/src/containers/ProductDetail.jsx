@@ -116,8 +116,8 @@ function ProductDetail({ userId }) {
                         <p>Price: ${product.price}</p>
                         <p>Condition: {product.condition}</p>
                         <label className='me-2' htmlFor='id_quantity'>Quantity:</label>
-                        <input className='me-3' onChange={onChange} type='number' name='quantity' id='id_quantity' min={1} max={100} defaultValue={1} style={{width:'50px'}}/>
-                        <button className='btn btn-primary col-2 mb-2' onClick={AddToCart}>Add to cart</button>
+                        <input className='me-3 mb-2' onChange={onChange} type='number' name='quantity' id='id_quantity' min={1} max={100} defaultValue={1} style={{width:'50px'}}/>
+                        <button className='btn btn-primary' onClick={AddToCart}>Add to cart</button>
                         <LoginAlarmModal showLoginAlarmModal={showLoginAlarmModal} toggleLoginAlarmModal={toggleLoginAlarmModal} />
                         <SelfbuyingAlarmModal showSelfbuyingAlarmModal={showSelfbuyingAlarmModal} toggleSelfbuyingAlarmModal={toggleSelfbuyingAlarmModal} />
                         <AddToCartModal showAddToCartModal={showAddToCartModal} toggleAddToCartModal={toggleAddToCartModal} addToCartProductId={addToCartProductId} product={product} newCartItem={newCartItem} fetchProduct={fetchProduct} />

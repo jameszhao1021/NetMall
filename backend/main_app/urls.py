@@ -20,4 +20,8 @@ urlpatterns = [
     path('mynetmall/product-image', ProductImgView.as_view(), name='product_images'),
     path('mynetmall/product-image/<int:pk>', ProductImgView.as_view(), name='product_images_update'),
     path('mynetmall/<str:category>', ProductByCategoryView.as_view(), name='product_by_category'),
+    path('api/search/', ProductView.as_view(), name='search'),
+    path('api/category-search/<str:category>/', ProductByCategoryView.as_view(), name='catecory_search')
 ]
+
+

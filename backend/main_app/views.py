@@ -15,6 +15,7 @@ from django.conf import settings
 import os
 from io import BytesIO
 from django.core.files.base import ContentFile
+from django.db.models import Q
 
 class BaseCRUDView(APIView):
     SelectedModel = None
@@ -86,6 +87,30 @@ class ProductView(BaseCRUDView):
     SelectedSerializer = ProductSerializer
     permission_classes = []
     authentication_classes = [] 
+
+    def get(self, request):
+        if 'q' in request.GET:
+            return self.search(request)
+        else:
+            return super().get(request)
+    
+    def search(self, request):
+            query = request.GET.get('q')
+            category = request.GET.get('category')
+
+            queryset = Product.objects.all()
+
+            if query:
+                queryset = queryset.filter(
+                    Q(title__icontains=query) | Q(description__icontains=query)
+                )
+            
+            if category:
+                queryset = queryset.filter(category__icontains=category)
+
+            serializer = ProductSerializer(queryset, many=True)
+            return Response(serializer.data)
+
     
 class ProductImgView(BaseCRUDView):
     SelectedModel = ProductImg
@@ -149,58 +174,7 @@ class ProductImgView(BaseCRUDView):
             # Return an error response if serializer is invalid
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
-    # def put(self, request, pk):
-    #     # Get the existing product image object
-    #     try:
-    #         product_img = self.SelectedModel.objects.get(pk=pk)
-    #     except ProductImg.DoesNotExist:
-    #         return Response({"error": "Product image not found"}, status=status.HTTP_404_NOT_FOUND)
 
-    #     # Get the new image file from the request
-    #     new_image_file = request.FILES.get('image')
-    #     if not new_image_file:
-    #         return Response({"error": "No new image file provided"}, status=status.HTTP_400_BAD_REQUEST)
-
-    #     # Update the product image data
-    #     serializer = self.SelectedSerializer(product_img, data={"image": new_image_file}, partial=True)
-
-    #     # Check if the serializer is valid
-    #     if serializer.is_valid(raise_exception=True):
-    #         # Save the updated product image to the server
-    #         updated_product_img = serializer.save()
-    #         new_image_file.seek(0)
-    #         # Handle image upload to AWS S3 (similar to the POST method)
-    #         try:
-    #             # Read the image file data
-    #             image_data = new_image_file.read()
-
-    #             # Create an S3 client
-    #             s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID, aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
-                
-    #             # Define the bucket name and object key
-    #             bucket_name = 'netmall'
-    #             object_key = 'product_images/' + new_image_file.name
-
-    #             # Upload the image file to S3
-    #             s3.put_object(Bucket=bucket_name, Key=object_key, Body=image_data)
-
-    #             # Construct the image URL
-    #             image_url = f'https://{bucket_name}.s3.amazonaws.com/{object_key}'
-
-    #             # Update the product image model with the new image URL
-    #             updated_product_img.image_url = image_url
-    #             updated_product_img.save()
-
-    #             # Return a success response
-    #             return Response(serializer.data, status=status.HTTP_200_OK)
-
-    #         except Exception as e:
-    #             # Return an error response if uploading to S3 fails
-    #             return Response({"error": f"Failed to upload updated image to AWS S3: {e}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-    #     else:
-    #         # Return an error response if serializer is invalid
-    #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     def put(self, request, pk):
         # Get the existing product image object
         try:
@@ -296,6 +270,22 @@ class ProductByCategoryView(BaseCRUDView):
         queryset = self.SelectedModel.objects.filter(category=category)
         serializer = self.SelectedSerializer(queryset, many=True)
         return Response(serializer.data)
+
+    # def search(self, request, category):
+    #     query = request.GET.get('q')
+    #     print(f'see the query: {query}')
+    #     if query:
+            
+    #         queryset = self.SelectedModel.objects.filter(
+    #             Q(title__icontains=query) | Q(description__icontains=query),
+    #             category=category, 
+    #         )
+    #     else:
+            
+    #         queryset = self.SelectedModel.objects.filter(category=category)
+        
+    #     serializer = self.SelectedSerializer(queryset, many=True)
+    #     return Response(serializer.data)
 
 class SellerStoreView(BaseCRUDView):
     SelectedModel = Product  # Corrected attribute name
