@@ -6,7 +6,7 @@ import { Dropdown } from 'react-bootstrap';
 import '../styles/NavBar.css';
 
 
-function NavBar({ isAuthenticated, logout, userId }) {
+function NavBar({ isAuthenticated, logout, userName }) {
 
    function guestLinks() {
       return (
@@ -22,7 +22,7 @@ function NavBar({ isAuthenticated, logout, userId }) {
    }
    function authLinks() {
       return (
-         <>
+         <div className="d-flex align-items-center">
             <li className="nav-item dropdown">
                <Dropdown>
                   <Dropdown.Toggle className="nav-link dropdown-toggle-no-caret text-dark" id="dropdown-basic" >
@@ -40,14 +40,20 @@ function NavBar({ isAuthenticated, logout, userId }) {
             <li className="nav-item">
                <Link to='/' className="nav-link" onClick={logout}>Log Out</Link>
             </li>
-         </>
+            
+         </div>
       )
    }
 
    return (
       <nav className="navbar navbar-expand-lg navbar-light bg-light">
          <div className="container">
+            <div className="d-flex align-items-center">
             <a className="navbar-brand" href="/">NetMall</a>
+            {userName && <li className="nav-item" style={{listStyle:'none'}}>
+               <p className="m-0">G'day, {userName}</p>
+            </li>}
+            </div>
             <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                <span className="navbar-toggler-icon"></span>
@@ -57,6 +63,7 @@ function NavBar({ isAuthenticated, logout, userId }) {
                   <li className="nav-item">
                      <Link to='/' className="nav-link" >Home</Link>
                   </li>
+                 
                   {isAuthenticated ? authLinks() : guestLinks()}
 
                </ul>
@@ -67,7 +74,8 @@ function NavBar({ isAuthenticated, logout, userId }) {
 }
 const mapStateToProps = state => ({
    isAuthenticated: state.auth.isAuthenticated,
-   userId: state.auth.user ? state.auth.user.id : null
+   userId: state.auth.user ? state.auth.user.id : null,
+   userName: state.auth.user ? state.auth.user.name : null
 
 })
 export default connect(mapStateToProps, { logout })(NavBar)

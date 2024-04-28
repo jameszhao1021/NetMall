@@ -72,7 +72,7 @@ function MyStore({ products, setProducts, fetchProducts, userId, userName }) {
       <h1>My Store</h1>
 
       <Link to={`/mynetmall/my-store/add-product`}>
-        <div className='btn btn-info mt-4'>
+        <div className='btn btn-info my-2'>
           Add Product
         </div>
       </Link>

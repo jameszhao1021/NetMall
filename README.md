@@ -37,4 +37,4 @@ Clone the app from https://github.com/jameszhao1021/NetMall.git.
   
 ## Next Steps
 
-I will allow users to upload and edit product images, add a filter bar, and consume payment API in later versions. Furthermore, I will spend more time improving the appearance of each page. 
+I will consume payment API and allow users to do more customised settings in later versions. Furthermore, I will keep improving the appearance of each page. 

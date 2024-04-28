@@ -71,10 +71,6 @@ function Cart({ userId, cartItems, setCartItems }) {
       });
   };
 
-  // const handleInputFocus = (itemId) => {
-  //   // Store the previous valid quantity when the input field is focused
-  //   setPreviousQuantity({ ...previousQuantity, [itemId]: editedQuantity[itemId] });
-  // };
 
   const handleQuantityChange = (itemId, quantity) => {
     let newQuantity;
@@ -159,7 +155,6 @@ function Cart({ userId, cartItems, setCartItems }) {
   }
 
 
-
   return (
     <div className='container'>
       <h1>Shopping cart</h1>
@@ -169,40 +164,39 @@ function Cart({ userId, cartItems, setCartItems }) {
         <div className='col-md-8'>
           {
             cartItems
-              // .filter(product => product.seller === userId) // Filter products by seller equal to userId
               .map(cartItem => (
                 <div key={cartItem.id} className='card '>
                   <div className='card-body'>
                     <p>Seller: {cartItem.seller}</p>
 
                     <div className='d-flex gap-3 mb-3 align-items-center'>
-                      <div className='col-2 square-container'>
+                      <div className='col-2 square-container m-0'>
                         {cartItem.image_urls[0] &&
                           <img className='square-image-order' src={cartItem.image_urls[0]} alt={cartItem.title} style={{ width: '100%' }} />
                         }
                       </div>
-                      <p className='col-4'>{cartItem.title}</p>
-                      <p>Quantity:</p>
+                      <p className='col-4 m-0'>{cartItem.title}</p>
+                      <p className='m-0'>Quantity:</p>
                       <div className='quantityEditPanel'>
-                        <button className="btn btn-secondary" onClick={() => handleMinus(cartItem)}>-</button>
+                        <button className="" onClick={() => handleMinus(cartItem)} style={{width:'30px', height:'30px'}}>-</button>
                         <input
                           type='text'
                           value={editedQuantity[cartItem.id] !== undefined ? editedQuantity[cartItem.id] : cartItem.quantity}
                           onChange={(e) => handleQuantityChange(cartItem.id, e.target.value)}
                           // onFocus={() => handleInputFocus(cartItem.id)} 
                           onBlur={() => handleQuantityBlur(cartItem)}
-                          style={{ maxWidth: '40px' }}
+                          style={{ maxWidth: '40px', height:'30px' }}
                         />
-                        <button className="btn btn-secondary" onClick={() => handlePlus(cartItem)}>+</button>
+                        <button className="" onClick={() => handlePlus(cartItem)} style={{width:'30px', height:'30px'}}>+</button>
                       </div>
                       {editedQuantity[cartItem.id] && editedQuantity[cartItem.id] > cartItem.stock && <span style={{ color: 'red' }}>Only {cartItem.stock} left</span>}
                       {(editedQuantity[cartItem.id] === 0) && <span style={{ color: 'red' }}>Invalid quantity</span>}
-                      <p>Price: ${cartItem.price * cartItem.quantity}</p>
+                      <p className='m-0'>Price: ${cartItem.price * cartItem.quantity}</p>
                     </div>
 
                     <div className='row d-flex justify-content-evenly mb-2'>
                       <Link to={`/mynetmall/pay/${cartItem.id}`} className='col-4'>
-                        <button className='btn btn-info w-100'>Buy it now</button>
+                        <button className='btn btn-primary w-100'>Buy it now</button>
                       </Link>
                       <button className='btn btn-danger col-4' onClick={() => toggleDeleteModal(cartItem.id)}>Delete</button>
                       <ItemDeleteModal showDeleteModal={showDeleteModal} toggleDeleteModal={toggleDeleteModal} handleDelete={handleDelete} deleteItemId={deleteItemId} />

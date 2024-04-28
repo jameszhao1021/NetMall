@@ -10,7 +10,7 @@ function CategoryBar({ searchQuery, handleSearch, handleSearchQueryChange }) {
             <div className="container">
                 <div className="row">
                     <div className="col ">
-                        <div className="d-none d-md-block ">
+                        <div className="d-none d-lg-block ">
                             <ul className="nav justify-content-evenly align-items-center">
                                 <li className='nav-item categoryBar'>
                                     <Link to='/Electronics'>
@@ -58,7 +58,7 @@ function CategoryBar({ searchQuery, handleSearch, handleSearchQueryChange }) {
                                 </li>
                             </ul>
                         </div>
-                        <div className="d-flex d-md-none justify-content-between collapsePart">
+                        <div className="d-flex d-lg-none justify-content-between collapsePart">
                             <Dropdown>
                                 <Dropdown.Toggle variant="outline-primary" id="dropdown-basic">
                                     Categories
