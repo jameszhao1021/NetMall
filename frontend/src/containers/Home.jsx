@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import React from 'react';
 import { Link } from 'react-router-dom';
 import CategoryBar from '../components/CategoryBar';
+import BannerCarousel from '../components/BannerCarousel';
 
 function Home({ fetchProducts, products }) {
   const csrfToken = document.cookie.split('; ').find(cookie => cookie.startsWith('csrftoken='))?.split('=')[1];
@@ -19,6 +20,8 @@ function Home({ fetchProducts, products }) {
   return (
     <div className='container'>
       <CategoryBar />
+      <BannerCarousel />
+      <h4 className='mt-4'>Popular items</h4>
       <div className='d-flex flex-wrap mt-4'>
         {products.map(product => (
           <div key={product.id} className='card col-lg-3 col-md-4 col-sm-6 shadow-sm'>
