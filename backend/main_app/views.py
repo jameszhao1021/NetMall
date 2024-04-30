@@ -287,6 +287,11 @@ class ProductByCategoryView(BaseCRUDView):
     #     serializer = self.SelectedSerializer(queryset, many=True)
     #     return Response(serializer.data)
 
+    def get(self,request,category):
+        queryset = self.SelectedModel.objects.filter(category=category)
+        serializer = self.SelectedSerializer(queryset, many=True)
+        return Response(serializer.data)
+        
 class SellerStoreView(BaseCRUDView):
     SelectedModel = Product  # Corrected attribute name
     SelectedSerializer = ProductSerializer

@@ -11,6 +11,7 @@ urlpatterns = [
     path('mynetmall/my-store/add-product', ProductView.as_view(), name='addproduct'),
     path('mynetmall/my-store/edit-product/<int:pk>/', ProductView.as_view(), name='deleteproduct'),
     path('products/<int:pk>/', SelectedProductView.as_view(), name='selectedproduct'),
+    
     path('mynetmall/my-cart/<int:pk>', CartView.as_view(), name='getcartitems'),
     path('mynetmall/single-checkout/<int:pk>', SingleCheckoutView.as_view(), name='getonecartitems'),
     path('mynetmall/pay', OrderView.as_view(), name='pay'),
