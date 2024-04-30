@@ -63,9 +63,9 @@ function MyStore({ products, setProducts, fetchProducts, userId, userName }) {
       });
   };
 
-  if (loading) {
-    return <div>Loading...</div>; // Render loading indicator while fetching products
-  }
+  // if (loading) {
+  //   return <div>Loading...</div>; 
+  // }
 
   return (
     <div className='container'>
@@ -89,7 +89,7 @@ function MyStore({ products, setProducts, fetchProducts, userId, userName }) {
                   <img className='square-image' src={product.image_urls[0]} alt={product.title} style={{ width: '100%'}}  />
                 }
                 </div>
-                <p>{product.title}</p>
+                <p className='mt-2'>{product.title}</p>
                 <p>Stock: {`${product.stock <= 10 ? `Only ${product.stock} left` : `${product.stock}`} `}</p>
                 <p>Price: ${product.price}</p>
                 <div className='row d-flex justify-content-evenly mb-2'>

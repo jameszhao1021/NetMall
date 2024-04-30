@@ -7,7 +7,7 @@ import { useParams } from 'react-router-dom';
 
 function EditProduct({ userId, products, newProduct, setNewProduct, fetchProducts }) {
     let { productId } = useParams();
-    const csrfToken = document.cookie.split('; ').find(cookie => cookie.startsWith('csrftoken=')).split('=')[1];
+    const csrfToken = document.cookie.split('; ').find(cookie => cookie.startsWith('csrftoken='))?.split('=')[1];
     axios.defaults.headers.common['X-CSRFToken'] = csrfToken;
 
     productId = parseInt(productId);
@@ -18,7 +18,7 @@ function EditProduct({ userId, products, newProduct, setNewProduct, fetchProduct
     const navigate = useNavigate();
 
     useEffect(() => {
-        const csrfToken = document.cookie.split('; ').find(cookie => cookie.startsWith('csrftoken=')).split('=')[1];
+        const csrfToken = document.cookie.split('; ').find(cookie => cookie.startsWith('csrftoken='))?.split('=')[1];
         axios.defaults.headers.common['X-CSRFToken'] = csrfToken;
         fetchProducts();
     }, []);

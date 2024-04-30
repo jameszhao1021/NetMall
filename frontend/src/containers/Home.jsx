@@ -39,7 +39,7 @@ function Home({ fetchProducts, products, searchQuery, searchResults, setSearchRe
                     <img className='square-image' src={product.image_urls[0]} alt={product.title} style={{ width: '100%' }} />
                   }
                 </div>
-                <h5 className='card-title'>{product.title}</h5>
+                <h5 className='card-title mt-2'>{product.title}</h5>
                 <p className='card-text mt-4'>Stock: {`${product.stock <= 10 ? `Only ${product.stock} left` : `${product.stock}`}`}</p>
                 <p className='card-text'>Price: ${product.price}</p>
               </div>
@@ -56,7 +56,7 @@ function Home({ fetchProducts, products, searchQuery, searchResults, setSearchRe
                     <img className='square-image' src={product.image_urls[0]} alt={product.title} style={{ width: '100%' }} />
                   }
                 </div>
-                <h5 className='card-title'>{product.title}</h5>
+                <h5 className='card-title mt-2'>{product.title}</h5>
                 <p className='card-text mt-4'>Stock: {`${product.stock <= 10 ? `Only ${product.stock} left` : `${product.stock}`}`}</p>
                 <p className='card-text'>Price: ${product.price}</p>
               </div>

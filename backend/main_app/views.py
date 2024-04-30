@@ -246,7 +246,8 @@ class MyProductView(BaseCRUDView):
 class SelectedProductView(BaseCRUDView):
     SelectedModel = Product
     SelectedSerializer = ProductSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = []
+    authentication_classes = [] 
 
     def get(self, request, pk):
         try:
