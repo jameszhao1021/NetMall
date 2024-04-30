@@ -28,7 +28,7 @@ Django REST Framework, PostgreSql, Bootstrap were used in this app.
 
 ## Getting Started
 
-Clone the app from https://github.com/jameszhao1021/NetMall.git.
+Visit the app from https://net-mall-41b5566731fe.herokuapp.com/ or clone the app from https://github.com/jameszhao1021/NetMall.git.
 1. Sign up for a new account using your email. Click the verification link in the email you receive to verify your email address. After verification, you can log in to your account.
 2. You can see all products on the home page, and click to see details page, where you can add the product to your cart.
 3. Click on the cart in the navigation bar to check out. You need to provide delivery information. Once payment is confirmed, you can see your orders in Purchase History page.
