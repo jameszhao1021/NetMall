@@ -272,22 +272,6 @@ class ProductByCategoryView(BaseCRUDView):
         serializer = self.SelectedSerializer(queryset, many=True)
         return Response(serializer.data)
 
-    # def search(self, request, category):
-    #     query = request.GET.get('q')
-    #     print(f'see the query: {query}')
-    #     if query:
-            
-    #         queryset = self.SelectedModel.objects.filter(
-    #             Q(title__icontains=query) | Q(description__icontains=query),
-    #             category=category, 
-    #         )
-    #     else:
-            
-    #         queryset = self.SelectedModel.objects.filter(category=category)
-        
-    #     serializer = self.SelectedSerializer(queryset, many=True)
-    #     return Response(serializer.data)
-
     def get(self,request,category):
         queryset = self.SelectedModel.objects.filter(category=category)
         serializer = self.SelectedSerializer(queryset, many=True)
@@ -421,7 +405,9 @@ class OrderView(BaseCRUDView):
 
             with transaction.atomic():
                 for seller_id, seller_cart_items in cart_items_by_seller.items():
-                    seller_name = cart_item.productId.seller.name
+             
+                    seller_name = cart_items_by_seller[seller_id][0].productId.seller.name
+
                     total_price = sum(cart_item.productId.price * cart_item.quantity for cart_item in seller_cart_items)
                   
                     order_data = {
@@ -461,13 +447,11 @@ class OrderView(BaseCRUDView):
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-
 class SingleOrderView(BaseCRUDView):
     SelectedModel = Order
     SelectedSerializer = OrderSerializer
     permission_classes = [IsAuthenticated]
 
-   
    
     def post(self, request):
         user_id = request.data.get('user_id')
