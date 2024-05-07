@@ -31,7 +31,8 @@ function App() {
   const headers = {
     'Authorization': `Bearer ${token}`
   };
-  
+
+
   const [products, setProducts] = useState([]);
   const [editProduct, setEditProduct] = useState(null);
   const [newProduct, setNewProduct] = useState({
@@ -94,7 +95,7 @@ function App() {
             <Route path='/mynetmall/my-store' element={<MyStore products={products} setProducts={setProducts} fetchProducts={fetchProducts} />} />
             <Route path='/mynetmall/store/:sellerId' element={<SellerStore products={products} setProducts={setProducts} />} />
             <Route path='/mynetmall/my-store/add-product' element={<AddProduct newProduct={newProduct} setNewProduct={setNewProduct} products={products} setProducts={setProducts} fetchProducts={fetchProducts} />} />
-            <Route path='/mynetmall/my-store/edit-product/:productId' element={<EditProduct newProduct={newProduct} setNewProduct={setNewProduct} products={products} editProduct={editProduct} setEditProduct={setEditProduct} fetchProducts={fetchProducts} />} />
+            <Route path='/mynetmall/my-store/edit-product/:productId' element={<EditProduct newProduct={newProduct} setNewProduct={setNewProduct} products={products} editProduct={editProduct} setEditProduct={setEditProduct} fetchProducts={fetchProducts}  />} />
             <Route path='/products/:productId' element={<ProductDetail fetchProducts={fetchProducts} products={products} setProducts={setProducts} cartItems={cartItems} setCartItems={setCartItems} />} />
             <Route path='/mynetmall/my-cart' element={<Cart cartItems={cartItems} setCartItems={setCartItems} />} />
             <Route path='/mynetmall/pay' element={<AllCheckout cartItems={cartItems} setCartItems={setCartItems} delivery={delivery} setDelivery={setDelivery} />} />
