@@ -150,12 +150,12 @@ function AddProduct({ userId }) {
                     <label htmlFor='id_description'>Description: </label>
                     <textarea className='form-control' id='id_description' name='description' rows='15' onChange={onChange} required></textarea>
                 </div>
-                <input type="submit" className="btn btn-primary me-3" value="Add Product"></input>
+                <input type="submit" className="btn btn-primary me-3 mt-2" value="Add Product"></input>
 
              
 
                 <Link to='/mynetmall/my-store'>
-                    <button className='btn btn-secondary'>Return</button>
+                    <button className='btn btn-secondary mt-2'>Return</button>
 
                 </Link>
                 <AddingModal ToggleShowAddingModal={ToggleShowAddingModal} showAddingModal={showAddingModal} buttonSx={buttonSx} loading={loading} success={success} />

@@ -168,7 +168,7 @@ function AllCheckout({ userId, cartItems, setCartItems, delivery, setDelivery })
         <label htmlFor='id_phone'>Phone: </label>
           <input type='text' className='form-control' id='id_phone' name='phone' onChange={onChange}required />
         </div>
-        <button type="submit" className='btn btn-secondary' >Confirm information</button>
+        <button type="submit" className='btn btn-secondary mt-2' >Confirm information</button>
       </form>
 
     </div>

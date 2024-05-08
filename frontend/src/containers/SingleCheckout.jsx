@@ -148,7 +148,7 @@ function SingleCheckout({ userId, delivery, setDelivery }) {
               <label htmlFor='id_phone'>Phone: </label>
               <input type='text' className='form-control' id='id_phone' name='phone' onChange={onChange} required />
             </div>
-            <button type="submit" className='btn btn-secondary' >Confirm Information</button>
+            <button type="submit" className='btn btn-secondary mt-2' >Confirm Information</button>
           </form>
         </div>
       )}
